@@ -1,7 +1,5 @@
 cadastrosPessoa = dict()
 
-pessoas = 0
-
 while True:
     print('\nEscolha uma das opções a baixo: \n'
     '\n1 - cadastrar'
@@ -9,6 +7,8 @@ while True:
     option = input('\n--> ')
     if option == '1':
         numPessoas = int(input('Número de pessoas que deseja cadastrar: '))
+
+        pessoas = 0
 
         while pessoas < numPessoas:
             print(f'\n{pessoas + 1}° Pessoa')
@@ -25,17 +25,38 @@ while True:
                     elif cont == 9:
                         listCpf.append('-')
                 break
+            conCpf = ''
+            for i in listCpf:
+                conCpf = conCpf + i
+                cpf = conCpf
 
             if cpf in cadastrosPessoa.keys():
                 print('\nCPF inválido, por favor digite o seu CPF!')
             else:
                 idade = input('Digite sua idade: ')
-                cidade = input('Digite sua cidade: ')
+                telefone = input('Digite telefone: ')
+                while telefone.count('(') == 0 or telefone.count(')') == 0 or cpf.count('-') == 0:
+                    listTelefone = []
+                    cont = 0
+                    for c in telefone:
+                        cont+=1
+                        if cont == 1:
+                            listTelefone.append('(')
+                        listTelefone.append(c)
+                        if cont == 2:
+                            listTelefone.append(')')
+                        elif cont == 7:
+                            listTelefone.append('-')
+                    break
+                conTelefone = ''
+                for i in listTelefone:
+                    conTelefone = conTelefone + i
+                    telefone = conTelefone
 
                 cadastrosPessoa[cpf] = {
                     'nome': nome,
                     'idade': idade,
-                    'cidade origem': cidade
+                    'telefone': telefone
                 }
                 pessoas += 1
             ##input('Para onde vão: ')
@@ -47,12 +68,10 @@ while True:
             '\nopcão: ')
             if optionInfo == '1':
                 for c, dados in cadastrosPessoa.items():
-                    print('\ncpf: ', end='')
-                    for i in listCpf:
-                        print(i, end='')
-                    print(f'\nnome: {dados['nome']}')
+                    print(f'\ncpf: {c}')
+                    print(f'nome: {dados['nome']}')
                     print(f'idade: {dados['idade']}')
-                    print(f'cidade origem: {dados['cidade origem']}')
+                    print(f'telefone: {dados['telefone']}')
             elif optionInfo == '2':
                 print('voos**')
             elif optionInfo == '3':
