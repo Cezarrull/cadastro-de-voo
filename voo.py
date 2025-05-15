@@ -695,11 +695,23 @@ Escolha uma das opções a baixo:
                         'dataHora': dataHora,
                         'companhiaAerea': companhia
                     }
+
+####################################################################################################
+
                 elif optionVoo == '2':
-                    if contVoo == 0:
-                        print('\nNão há voos cadastrados, por favor cadastre um!')
-                    else:
-                        os.system('cls' if os.name == 'nt' else 'clear')
+                    print('Selecione uma opção de consulta por:')
+                    print('''
+1 - Código do voo
+2 - Origem
+3 - Destino''')
+                    selectColsutaVoo = input('--> ')
+                    if selectColsutaVoo == '1':
+                        vooConsulta = input('Digite o código do voo que deseja consultar: ')
+                        if vooConsulta == '' or vooConsulta[0] != 'v' or vooConsulta[1] != '-' or vooConsulta[2:].isdigit() == False:
+                            print('Código inválido, por favor digite o código do voo!')
+                            continue
+                        else:
+                            os.system('cls' if os.name == 'nt' else 'clear')
                         print('Voos cadastrados:')
                         for c, dados in voos.items():
                             print('==================')
@@ -716,6 +728,11 @@ Escolha uma das opções a baixo:
                             print('==================\n')
                         input('Pressione ENTER para continuar...')
                         os.system('cls' if os.name == 'nt' else 'clear')
+                    if contVoo == 0:
+                        print('\nNão há voos cadastrados, por favor cadastre um!')
+
+###################################################################################################
+
                 elif optionVoo == '3':
                     if contVoo == 0:
                         print('\nAinda não há voos cadastrados!')
