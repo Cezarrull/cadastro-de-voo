@@ -295,8 +295,19 @@ Escolha uma das opções a baixo:
                                 input('Pressione ENTER para continuar...')
                                 continue
                             else:
-                                verifCpf = True
-                                continue
+                                passageiroEncontrado = False
+                                for auxCpf in passageiros:
+                                    if cpf in passageiros[auxCpf]['acompanhante'].keys():
+                                        passageiroEncontrado = True
+                                        
+                                if passageiroEncontrado == True:
+                                    print('\nCPF já cadastrado! Por favor, digite outro CPF!')
+                                    input('Pressione ENTER para continuar...')
+                                    continue
+
+                                else:
+                                    verifCpf = True
+                                    continue
                         else:
                             print('CPF inválido, por favor digite o seu CPF!')
                             input('Pressione ENTER para continuar...')
@@ -309,8 +320,19 @@ Escolha uma das opções a baixo:
                             input('Pressione ENTER para continuar...')
                             continue
                         else:
-                            verifCpf = True
-                            continue
+                            passageiroEncontrado = False
+                            for auxCpf in passageiros:
+                                if cpf in passageiros[auxCpf]['acompanhante'].keys():
+                                    passageiroEncontrado = True
+                                    
+                            if passageiroEncontrado == True:
+                                print('\nCPF já cadastrado! Por favor, digite outro CPF!')
+                                input('Pressione ENTER para continuar...')
+                                continue
+
+                            else:
+                                verifCpf = True
+                                continue
                     else:   
                         print('CPF inválido, por favor digite o seu CPF!')
                         input('Pressione ENTER para continuar...')
@@ -728,6 +750,8 @@ Escolha uma das opções a baixo:
                                                 print(f'{passagens} - pagador: {passageiros[cpf]['acompanhante'][cpfListar]['passagens'][passagens]['pagador']}')
                                         print('==================')
                                         break
+                                else:
+                                    print(f'Passageiro não encontrado!')
                                 input('Pressione ENTER para continuar...')
                                 os.system('cls' if os.name == 'nt' else 'clear')
                                 break
@@ -851,6 +875,9 @@ Escolha uma das opções a baixo:
                                         break
 
                                     passageiros[cpfAlterar]['nome'] = nomeAlterar
+                                    for codVoo in dicPassagensVoos:
+                                        if cpfAlterar in dicPassagensVoos[codVoo].keys():
+                                            dicPassagensVoos[codVoo][cpfAlterar]['nome'] = nomeAlterar
                                     print(f'Nome alterado com sucesso!')
                                     input('Pressione ENTER para continuar...')
                                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -863,6 +890,12 @@ Escolha uma das opções a baixo:
 
                                         if idadeAlterar == '-':
                                             break
+
+                                        if idadeAlterar < passageiros[cpfAlterar]['idade']:
+                                            print('Não é possível diminuir a idade do passageiro!')
+                                            input('Pressione ENTER para continuar...')
+                                            continue
+
 
                                         if idadeAlterar.isdigit() == False: 
                                             print(f'Idade inválida! Por favor, digite novamente.')
@@ -880,6 +913,9 @@ Escolha uma das opções a baixo:
                                         break
 
                                     passageiros[cpfAlterar]['idade'] = idadeAlterar
+                                    for codVoo in dicPassagensVoos:
+                                        if cpfAlterar in dicPassagensVoos[codVoo].keys():
+                                            dicPassagensVoos[codVoo][cpfAlterar]['idade'] = idadeAlterar
                                     print(f'Idade alterada com sucesso!')
                                     input('Pressione ENTER para continuar...')
                                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -939,6 +975,9 @@ Escolha uma das opções a baixo:
                                         break
 
                                     passageiros[cpfAlterar]['telefone'] = telefoneAlterar
+                                    for codVoo in dicPassagensVoos:
+                                        if cpfAlterar in dicPassagensVoos[codVoo].keys():
+                                            dicPassagensVoos[codVoo][cpfAlterar]['telefone'] = telefoneAlterar
                                     print(f'Telefone alterado com sucesso!')
                                     input('Pressione ENTER para continuar...')
                                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -958,7 +997,14 @@ Escolha uma das opções a baixo:
                                             verifExcluir = True
 
                                     if excluir == 'S':
+                                        listaCpfApagar = []
                                         del passageiros[cpfAlterar]
+                                        for codVoo in dicPassagensVoos:
+                                            if cpfAlterar in dicPassagensVoos[codVoo].keys():
+                                                listaCpfApagar.append(codVoo)
+                                        for codVoo in listaCpfApagar:
+                                            del dicPassagensVoos[codVoo][cpfAlterar]
+                                            voos[codVoo]['passageiros'] += 1
                                         print(f'Passageiro excluído com sucesso!')
                                         input('Pressione ENTER para continuar...')
                                         os.system('cls' if os.name == 'nt' else 'clear')
@@ -990,7 +1036,9 @@ Escolha uma das opções a baixo:
 
                                 print('''Escolha uma das opções a baixo:
 1 - Alterar nome
-2 - Alterar idade''')
+2 - Alterar idade
+3 - Excluir passageiro
+4 - Voltar ao menu de passageiros''')
                                 optionDados = input('--> ')
                                 if optionDados == '-':
                                     break
@@ -1050,12 +1098,19 @@ Escolha uma das opções a baixo:
 
                                     if nomeAlterar == '-':
                                         break
+                                    
                                     for cpf in passageiros:
                                         if cpfAlterar in passageiros[cpf]['acompanhante'].keys():
                                             passageiros[cpf]['acompanhante'][cpfAlterar]['nome'] = nomeAlterar
-                                            print(f'Nome alterado com sucesso!')
-                                            input('Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                    for codVoo in dicPassagensVoos:
+                                        for cpf in dicPassagensVoos[codVoo].keys():
+                                            if cpfAlterar in dicPassagensVoos[codVoo][cpf]['acompanhante'].keys():
+                                                dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfAlterar]['nome'] = nomeAlterar
+
+                                    print(f'Nome alterado com sucesso!')
+                                    input('Pressione ENTER para continuar...')
+                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                    
 
                                 elif optionDados == '2':
                                     verifIdadeAlterar = False
@@ -1065,7 +1120,17 @@ Escolha uma das opções a baixo:
 
                                         if idadeAlterar == '-':
                                             break
-
+                                        idadeMenor = False
+                                        for cpf in passageiros:
+                                            if cpfAlterar in passageiros[cpf]['acompanhante'].keys():
+                                                if idadeAlterar < passageiros[cpf]['acompanhante'][cpfAlterar]['idade']:
+                                                    idadeMenor = True
+                                        
+                                        if idadeMenor == True:
+                                            print('Não é possível diminuir a idade do passageiro!')
+                                            input('Pressione ENTER para continuar...')
+                                            continue
+                                           
                                         if idadeAlterar.isdigit() == False: 
                                             print(f'Idade inválida! Por favor, digite novamente.')
                                             input(f'Pressione ENTER para continuar..')
@@ -1133,7 +1198,6 @@ Escolha uma das opções a baixo:
                                                 input('Pressione ENTER para continuar...')
                                                 continue
 
-                                        listaCpfApagar = []
                                         for cpf in passageiros:
                                             if cpfAlterar in passageiros[cpf]['acompanhante'].keys():
                                                 listaCpfApagar.append(cpf)
@@ -1146,12 +1210,77 @@ Escolha uma das opções a baixo:
                                                 'acompanhante': {}
                                             }
                                             del passageiros[cpf]['acompanhante'][cpfAlterar]
+
+                                        dicCpfVooApagar = {}
+                                        for codVoo in dicPassagensVoos:
+                                            for cpf in dicPassagensVoos[codVoo].keys():
+                                                if cpfAlterar in dicPassagensVoos[codVoo][cpf]['acompanhante'].keys():
+                                                    dicCpfVooApagar[codVoo] = {cpf}
+
+                                        for codVoo in dicCpfVooApagar:
+                                            for cpf in dicCpfVooApagar[codVoo]:
+                                                del dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfAlterar]
+                                                dicPassagensVoos[codVoo][cpfAlterar] = {
+                                                    'nome': passageiros[cpfAlterar]['nome'],
+                                                    'idade': passageiros[cpfAlterar]['idade'],
+                                                    'telefone': passageiros[cpfAlterar]['telefone'],
+                                                    'passagens': passageiros[cpfAlterar]['passagens'],
+                                                    'acompanhante': {}
+                                                }
+                                        
                                     else:
                                         for cpf in passageiros:   
                                             passageiros[cpf]['acompanhante'][cpfAlterar]['idade'] = idadeAlterar
+                                        for codVoo in dicPassagensVoos:
+                                            for cpf in dicPassagensVoos[codVoo].keys():
+                                                if cpfAlterar in dicPassagensVoos[codVoo][cpf]['acompanhante'].keys():
+                                                    dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfAlterar]['idade'] = idadeAlterar
+
                                             print(f'Idade alterada com sucesso!')
                                             input('Pressione ENTER para continuar...')
                                             os.system('cls' if os.name == 'nt' else 'clear')
+                                elif optionDados == '3':
+                                    verifExcluir = False
+                                    while verifExcluir == False:
+                                        os.system('cls' if os.name == 'nt' else 'clear')
+                                        excluir = input(f'Deseja realmente excluir o passageiro {passageiros[cpfAlterar]['acompanhante'][cpfAlterar]['nome']}? (S/N): ').upper()
+
+                                        if excluir == '-':
+                                            break
+
+                                        if excluir not in ['S', 'N']:
+                                            print('Opção inválida, por favor digite S ou N!')
+                                            continue
+                                        else:
+                                            verifExcluir = True
+
+                                    if excluir == 'S':
+                                        for cpf in passageiros:
+                                            if cpfAlterar in passageiros[cpf]['acompanhante'].keys():
+                                                listaCpfApagar.append(cpf)
+
+                                        for cpf in listaCpfApagar:
+                                            del passageiros[cpf]['acompanhante'][cpfAlterar]
+                                            
+                                        dicCpfVooApagar = {}
+                                        for codVoo in dicPassagensVoos:
+                                            for cpf in dicPassagensVoos[codVoo].keys():
+                                                if cpfAlterar in dicPassagensVoos[codVoo][cpf]['acompanhante'].keys():
+                                                    dicCpfVooApagar[codVoo] = {cpf}
+                                        for codVoo in dicCpfVooApagar:
+                                            for cpf in dicCpfVooApagar[codVoo]:
+                                                del dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfAlterar]
+                                                voos[codVoo]['passageiros'] += 1
+                                                
+                                        print(f'Passageiro excluído com sucesso!')
+                                        input('Pressione ENTER para continuar...')
+                                        os.system('cls' if os.name == 'nt' else 'clear')
+                                        break
+                                    elif excluir == 'N':
+                                        continue
+
+                                elif optionDados == '4':
+                                    break
 
                     elif optionPassageiros == '3':
                         verifOptionPassageiros = True
@@ -1159,8 +1288,10 @@ Escolha uma das opções a baixo:
                             
         elif option == '3':
             os.system('cls' if os.name == 'nt' else 'clear')
-
-            print('''
+        
+            menuVoos = True
+            while menuVoos == True:
+                print('''
         == MENU DE VOOS ==
 
 Escolha uma das opções a baixo:
@@ -1169,1039 +1300,1108 @@ Escolha uma das opções a baixo:
 2- Consultar voos
 3- Consultar passageiros de um voo
 4- Menu passagens
-5- Voltar ao menu principal
+5- Cancelar voo
+6- Voltar ao menu principal
                     ''')
-            verifOptionVoo = False
-            while verifOptionVoo == False:
-                optionVoo = input('--> ')
+                verifOptionVoo = False
+                while verifOptionVoo == False:
+                    optionVoo = input('--> ')
 
-                if optionVoo == '-':
-                    break
+                    if optionVoo == '-':
+                        menuVoos = False
+                        break
 
-                if len(optionVoo) != 1 or option not in listaNumeroVerificacao[0:5]:
-                    print('Opção inválida, por favor digite uma opção válida!')
-                    continue
+                    if len(optionVoo) != 1 or option not in listaNumeroVerificacao[0:5]:
+                        print('Opção inválida, por favor digite uma opção válida!')
+                        continue
+                    else:
+                        verifOptionVoo = True
                 else:
-                    verifOptionVoo = True
-            else:
 
-                if optionVoo == '1':
-                    print('CADASTRO DE VOO\n')
+                    if optionVoo == '1':
+                        print('CADASTRO DE VOO\n')
 
-                    verifOrigem = False
-                    while verifOrigem == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        origem = input('Digite o estado origem do voo: ').title()
+                        verifOrigem = False
+                        while verifOrigem == False:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            origem = input('Digite o estado origem do voo: ').title()
 
-                        if origem == '-':
-                            break
+                            if origem == '-':
+                                menuVoos = False
+                                break
 
-                        if origem.isalpha() and len(origem) == 2:
-                            origem = origem.upper()
+                            if origem.isalpha() and len(origem) == 2:
+                                origem = origem.upper()
 
-                        if origem == '' or origem.isdigit() == True or len(origem) < 2 or len(origem) > 50:
-                            print('Origem inválida, por favor, digite a origem do voo!')
+                            if origem == '' or origem.isdigit() == True or len(origem) < 2 or len(origem) > 50:
+                                print('Origem inválida, por favor, digite a origem do voo!')
+                                input('Pressione ENTER para continuar...')
+                                continue
+
+                            else:
+                            
+                                os.system('cls' if os.name == 'nt' else 'clear')
+                                for regiao in dicRegioesBrasil:
+                                    for estado in dicRegioesBrasil[regiao]:
+                                        for nomeEstado in dicRegioesBrasil[regiao][estado]:
+                                            if nomeEstado.find(origem) != -1:
+                                                print('==================')
+                                                print(f'Origem: {nomeEstado}')
+                                                print(f'Região: {regiao}')
+                                                print(f'Companhias Aéreas:')
+                                                for companhia in dicRegioesBrasil[regiao]['companhiasAereas']:
+                                                    print(f'- {companhia}')
+                                                print('==================')
+                                                origem = nomeEstado
+                                                regiaoOrigem = regiao
+                                                verifOrigem = True
+                                                
+                            if verifOrigem == False:
+                                print('Origem não encontrada, por favor, digite a origem do voo!')
+                                input('Pressione ENTER para continuar...')
+                                continue
                             input('Pressione ENTER para continuar...')
+                        
+                        if origem == '-':
+                            menuVoos = False
                             continue
 
-                        else:
-                        
+                        verifDestino = False
+                        while verifDestino == False:
                             os.system('cls' if os.name == 'nt' else 'clear')
+                            destino = input('Digite o estado destino do voo: ').title()
+
+                            if destino == '-':
+                                menuVoos = False
+                                break
+
+                            if destino.isalpha() and len(destino) == 2:
+                                destino = destino.upper()
+
+                            if destino == '' or destino.isdigit() or len(destino) < 2 or len(destino) > 50:
+                                print('Destino inválido, por favor, digite o destino do voo!')
+                                input('Pressione ENTER para continuar...')
+                                continue
+
+                            else:
+                                os.system('cls' if os.name == 'nt' else 'clear')
+                                for regiao in dicRegioesBrasil:
+                                    for estado in dicRegioesBrasil[regiao]:
+                                        for nomeEstado in dicRegioesBrasil[regiao][estado]:
+                                            if nomeEstado.find(destino) != -1:
+                                                print('==================')
+                                                print(f'Destino: {nomeEstado}')
+                                                print(f'Região: {regiao}')
+                                                print(f'Companhias Aéreas:')
+                                                for companhia in dicRegioesBrasil[regiao]['companhiasAereas']:
+                                                    print(f'- {companhia}')
+                                                print('==================')
+                                                destino = nomeEstado
+                                                regiaoDestino =  regiao
+                                                verifDestino = True
+
+                            if verifDestino == False:
+                                print('Destino não encontrado, por favor, digite o destino do voo!')
+                                input('Pressione ENTER para continuar...')
+                                continue
+                            input('Pressione ENTER para continuar...')
+                        
+                        if destino == '-':
+                                menuVoos = False
+                                continue
+                        
+                        verifAeroportoOrigem = False
+                        while verifAeroportoOrigem == False:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            for regiao in dicAeroportos:
+                                for estado in dicAeroportos[regiao]:
+                                    if estado == origem:
+                                        print('==================')
+                                        print(f'Origem: {estado}')
+                                        print(f'Região: {regiao}')
+                                        print('Aeroportos:')
+                                        contAerosportos = 1
+                                        for aeroportosEstados in dicAeroportos[regiao][estado]:
+                                            aeroportos = aeroportosEstados
+                                            print(f'{contAerosportos} - {aeroportos}')
+                                            contAerosportos += 1
+                                        print('==================')
+                                        selectAeroportoOrigem = input('\nSelecione o aeroporto de origem: ')
+
+                                        if selectAeroportoOrigem == '-':
+                                            menuVoos = False
+                                            verifAeroportoOrigem = True
+                                            break
+
+                                        if selectAeroportoOrigem.isdigit() == False or int(selectAeroportoOrigem) > contAerosportos or int(selectAeroportoOrigem) < 0 or selectAeroportoOrigem == '' or selectAeroportoOrigem not in listaNumeroVerificacao[0:2]:
+                                            print('Aeroporto inválido, por favor digite o aeroporto de origem!')
+                                            input('Pressione ENTER para continuar...')
+                                            continue
+                                        else:
+                                            verifAeroportoOrigem = True
+                                            if selectAeroportoOrigem == '1':
+                                                selectAeroportoOrigem = dicAeroportos[regiao][estado][0]
+                                            elif selectAeroportoOrigem == '2':
+                                                selectAeroportoOrigem = dicAeroportos[regiao][estado][1]
+
+                                            print(f'Aeroporto de origem escolhido: {selectAeroportoOrigem}')
+                                            input('Pressione ENTER para continuar...')
+                        
+                        if selectAeroportoOrigem == '-':
+                            menuVoos = False
+                            continue
+
+                        verifAeroportoDestino = False
+                        while verifAeroportoDestino == False:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            for regiao in dicAeroportos:
+                                for estado in dicAeroportos[regiao]:
+                                    if estado == destino:
+                                        print('==================')
+                                        print(f'Destino: {estado}')
+                                        print(f'Região: {regiao}')
+                                        print('Aeroportos:')
+                                        contAerosportos = 1
+                                        for aeroportosEstados in dicAeroportos[regiao][estado]:
+                                            aeroportos = aeroportosEstados
+                                            print(f'{contAerosportos} - {aeroportos}')
+                                            contAerosportos += 1
+                                        print('==================')
+                                        selectAeroportoDestino = input('\nSelecione o aeroporto de Destino: ').title()
+
+                                        if selectAeroportoDestino == '-':
+                                            menuVoos = False
+                                            verifAeroportoDestino = True
+                                            break
+
+                                        if selectAeroportoDestino.isdigit() == False or int(selectAeroportoDestino) > contAerosportos or int(selectAeroportoDestino) < 0 or selectAeroportoDestino == '' or selectAeroportoDestino not in listaNumeroVerificacao[0:2]:
+                                            print('Aeroporto inválido, por favor digite o aeroporto de destino!')
+                                            input('Pressione ENTER para continuar...')
+                                            continue
+                                        else:
+                                            verifAeroportoDestino = True
+                                            if selectAeroportoDestino == '1':
+                                                selectAeroportoDestino = dicAeroportos[regiao][estado][0]
+                                            elif selectAeroportoDestino == '2':
+                                                selectAeroportoDestino = dicAeroportos[regiao][estado][1]
+                                            
+                                            print(f'Aeroporto de destino escolhido: {selectAeroportoDestino}')
+                                            input('Pressione ENTER para continuar...')
+
+                        if selectAeroportoDestino == '-':
+                            menuVoos = False
+                            continue
+
+                        verifDataHora = False
+                        while verifDataHora == False:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            dataHora = input('Informe a data e hora (formato: DD/MM/AAAA HH:MM): ')
+
+                            if dataHora == '-':
+                                menuVoos = False
+                                break
+
+                            if len(dataHora) > 16:
+                                print(f'Data inválida!')
+                                input(f'Pressione ENTER para continuar...')
+                                continue
+
+                            if dataHora == '':
+                                print(f'Data e horas são obrigatórias!\n')
+                                continue
+
+                            if ' ' in dataHora:
+                                data, hora = dataHora.split(' ')
+
+                                if '/' in data and ':' in hora:
+                                    dia, mes, ano = data.split('/')
+                                    hora, minuto = hora.split(':')
+
+                                    if dia.isdigit() and mes.isdigit() and ano.isdigit() and hora.isdigit() and minuto.isdigit():
+                                        dia = int(dia)
+                                        mes = int(mes)
+                                        ano = int(ano)
+                                        hora = int(hora)
+                                        minuto = int(minuto)
+
+                                        if 1 <= dia <= 31 and 1 <= mes <= 12 and 0 <= hora <= 23 and 0 <= minuto <= 59:
+                                            if mes in [4, 6, 9, 11] and dia > 30:
+                                                print('Este mês tem no máximo 30 dias.')
+                                            elif mes == 2 and dia > 28:
+                                                if ano % 4 == 0 and dia > 29:
+                                                    print('Fevereiro tem no máximo 29 dias.')
+                                                else:
+                                                    print('Fevereiro tem no máximo 28 dias.')
+
+                                            
+                                            else:
+                                                verifDataHora = True
+
+                                        else:
+                                            print('Algum valor está fora dos limites permitidos.')
+                                    else:
+                                        print('Todos os campos devem ser números.')
+                                else:
+                                    print('Formato incorreto. Use DD/MM/AAAA HH:MM.')
+                            else:
+                                print('Formato incorreto. Use DD/MM/AAAA HH:MM.')
+
+                        if dataHora == '-':
+                                menuVoos = False
+                                continue
+                        
+                        verifCompanhia = False
+                        while verifCompanhia == False:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            print('Companhias Aéreas diponíveis para a origem e destino escolhidos:')
+                            contCompanhia = 1
                             for regiao in dicRegioesBrasil:
                                 for estado in dicRegioesBrasil[regiao]:
                                     for nomeEstado in dicRegioesBrasil[regiao][estado]:
                                         if nomeEstado.find(origem) != -1:
                                             print('==================')
-                                            print(f'Origem: {nomeEstado}')
-                                            print(f'Região: {regiao}')
-                                            print(f'Companhias Aéreas:')
                                             for companhia in dicRegioesBrasil[regiao]['companhiasAereas']:
-                                                print(f'- {companhia}')
+                                                print(f'{contCompanhia} - {companhia}')
+                                                contCompanhia += 1
                                             print('==================')
-                                            origem = nomeEstado
-                                            regiaoOrigem = regiao
-                                            verifOrigem = True
-                                            
-                        if verifOrigem == False:
-                            print('Origem não encontrada, por favor, digite a origem do voo!')
-                            input('Pressione ENTER para continuar...')
-                            continue
-                        input('Pressione ENTER para continuar...')
-                    
-                    if origem == '-':
-                        continue
+                                            companhia = input('Digite a companhia aérea: ').title()
 
-                    verifDestino = False
-                    while verifDestino == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        destino = input('Digite o estado destino do voo: ').title()
+                                            if companhia == '-':
+                                                menuVoos = False
+                                                verifCompanhia = True
+                                                break
 
-                        if destino == '-':
-                            break
-
-                        if destino.isalpha() and len(destino) == 2:
-                            destino = destino.upper()
-
-                        if destino == '' or destino.isdigit() or len(destino) < 2 or len(destino) > 50:
-                            print('Destino inválido, por favor, digite o destino do voo!')
-                            input('Pressione ENTER para continuar...')
-                            continue
-
-                        else:
-                            os.system('cls' if os.name == 'nt' else 'clear')
-                            for regiao in dicRegioesBrasil:
-                                for estado in dicRegioesBrasil[regiao]:
-                                    for nomeEstado in dicRegioesBrasil[regiao][estado]:
-                                        if nomeEstado.find(destino) != -1:
-                                            print('==================')
-                                            print(f'Destino: {nomeEstado}')
-                                            print(f'Região: {regiao}')
-                                            print(f'Companhias Aéreas:')
-                                            for companhia in dicRegioesBrasil[regiao]['companhiasAereas']:
-                                                print(f'- {companhia}')
-                                            print('==================')
-                                            destino = nomeEstado
-                                            regiaoDestino =  regiao
-                                            verifDestino = True
-
-                        if verifDestino == False:
-                            print('Destino não encontrado, por favor, digite o destino do voo!')
-                            input('Pressione ENTER para continuar...')
-                            continue
-                        input('Pressione ENTER para continuar...')
-                    
-                    if destino == '-':
-                            continue
-                    
-                    verifAeroportoOrigem = False
-                    while verifAeroportoOrigem == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        for regiao in dicAeroportos:
-                            for estado in dicAeroportos[regiao]:
-                                if estado == origem:
-                                    print('==================')
-                                    print(f'Origem: {estado}')
-                                    print(f'Região: {regiao}')
-                                    print('Aeroportos:')
-                                    contAerosportos = 1
-                                    for aeroportosEstados in dicAeroportos[regiao][estado]:
-                                        aeroportos = aeroportosEstados
-                                        print(f'{contAerosportos} - {aeroportos}')
-                                        contAerosportos += 1
-                                    print('==================')
-                                    selectAeroportoOrigem = input('\nSelecione o aeroporto de origem: ')
-
-                                    if selectAeroportoOrigem == '-':
-                                        verifAeroportoOrigem = True
-                                        break
-
-                                    if selectAeroportoOrigem.isdigit() == False or int(selectAeroportoOrigem) > contAerosportos or int(selectAeroportoOrigem) < 0 or selectAeroportoOrigem == '' or selectAeroportoOrigem not in listaNumeroVerificacao[0:2]:
-                                        print('Aeroporto inválido, por favor digite o aeroporto de origem!')
-                                        input('Pressione ENTER para continuar...')
-                                        continue
-                                    else:
-                                        verifAeroportoOrigem = True
-                                        if selectAeroportoOrigem == '1':
-                                            selectAeroportoOrigem = dicAeroportos[regiao][estado][0]
-                                        elif selectAeroportoOrigem == '2':
-                                            selectAeroportoOrigem = dicAeroportos[regiao][estado][1]
-
-                                        print(f'Aeroporto de origem escolhido: {selectAeroportoOrigem}')
-                                        input('Pressione ENTER para continuar...')
-                    
-                    if selectAeroportoOrigem == '-':
-                        continue
-
-                    verifAeroportoDestino = False
-                    while verifAeroportoDestino == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        for regiao in dicAeroportos:
-                            for estado in dicAeroportos[regiao]:
-                                if estado == destino:
-                                    print('==================')
-                                    print(f'Destino: {estado}')
-                                    print(f'Região: {regiao}')
-                                    print('Aeroportos:')
-                                    contAerosportos = 1
-                                    for aeroportosEstados in dicAeroportos[regiao][estado]:
-                                        aeroportos = aeroportosEstados
-                                        print(f'{contAerosportos} - {aeroportos}')
-                                        contAerosportos += 1
-                                    print('==================')
-                                    selectAeroportoDestino = input('\nSelecione o aeroporto de Destino: ').title()
-
-                                    if selectAeroportoDestino == '-':
-                                        verifAeroportoDestino = True
-                                        break
-
-                                    if selectAeroportoDestino.isdigit() == False or int(selectAeroportoDestino) > contAerosportos or int(selectAeroportoDestino) < 0 or selectAeroportoDestino == '' or selectAeroportoDestino not in listaNumeroVerificacao[0:2]:
-                                        print('Aeroporto inválido, por favor digite o aeroporto de destino!')
-                                        input('Pressione ENTER para continuar...')
-                                        continue
-                                    else:
-                                        verifAeroportoDestino = True
-                                        if selectAeroportoDestino == '1':
-                                            selectAeroportoDestino = dicAeroportos[regiao][estado][0]
-                                        elif selectAeroportoDestino == '2':
-                                            selectAeroportoDestino = dicAeroportos[regiao][estado][1]
-                                        
-                                        print(f'Aeroporto de destino escolhido: {selectAeroportoDestino}')
-                                        input('Pressione ENTER para continuar...')
-
-                    if selectAeroportoDestino == '-':
-                        continue
-
-                    verifDataHora = False
-                    while verifDataHora == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        dataHora = input('Informe a data e hora (formato: DD/MM/AAAA HH:MM): ')
-
-                        if dataHora == '-':
-                            break
-
-                        if len(dataHora) > 16:
-                            print(f'Data inválida!')
-                            input(f'Pressione ENTER para continuar...')
-                            continue
-
-                        if dataHora == '':
-                            print(f'Data e horas são obrigatórias!\n')
-                            continue
-
-                        if ' ' in dataHora:
-                            data, hora = dataHora.split(' ')
-
-                            if '/' in data and ':' in hora:
-                                dia, mes, ano = data.split('/')
-                                hora, minuto = hora.split(':')
-
-                                if dia.isdigit() and mes.isdigit() and ano.isdigit() and hora.isdigit() and minuto.isdigit():
-                                    dia = int(dia)
-                                    mes = int(mes)
-                                    ano = int(ano)
-                                    hora = int(hora)
-                                    minuto = int(minuto)
-
-                                    if 1 <= dia <= 31 and 1 <= mes <= 12 and 0 <= hora <= 23 and 0 <= minuto <= 59:
-                                        if mes in [4, 6, 9, 11] and dia > 30:
-                                            print('Este mês tem no máximo 30 dias.')
-                                        elif mes == 2 and dia > 28:
-                                            if ano % 4 == 0 and dia > 29:
-                                                print('Fevereiro tem no máximo 29 dias.')
+                                            if companhia.isdigit() == False or int(companhia) > contCompanhia or int(companhia) < 0 or companhia == '' :
+                                                print('Companhia inválida, por favor digite a companhia do voo!')
+                                                input('Pressione ENTER para continuar...')
+                                                continue
                                             else:
-                                                print('Fevereiro tem no máximo 28 dias.')
-
-                                        
-                                        else:
-                                            verifDataHora = True
-
-                                    else:
-                                        print('Algum valor está fora dos limites permitidos.')
-                                else:
-                                    print('Todos os campos devem ser números.')
-                            else:
-                                print('Formato incorreto. Use DD/MM/AAAA HH:MM.')
-                        else:
-                            print('Formato incorreto. Use DD/MM/AAAA HH:MM.')
-
-                    if dataHora == '-':
-                            continue
-                    
-                    verifCompanhia = False
-                    while verifCompanhia == False:
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        print('Companhias Aéreas diponíveis para a origem e destino escolhidos:')
-                        contCompanhia = 1
-                        for regiao in dicRegioesBrasil:
-                            for estado in dicRegioesBrasil[regiao]:
-                                for nomeEstado in dicRegioesBrasil[regiao][estado]:
-                                    if nomeEstado.find(origem) != -1:
-                                        print('==================')
-                                        for companhia in dicRegioesBrasil[regiao]['companhiasAereas']:
-                                            print(f'{contCompanhia} - {companhia}')
-                                            contCompanhia += 1
-                                        print('==================')
-                                        companhia = input('Digite a companhia aérea: ').title()
-
-                                        if companhia == '-':
-                                            verifCompanhia = True
-                                            break
-
-                                        if companhia.isdigit() == False or int(companhia) > contCompanhia or int(companhia) < 0 or companhia == '' :
-                                            print('Companhia inválida, por favor digite a companhia do voo!')
-                                            input('Pressione ENTER para continuar...')
-                                            continue
-                                        else:
-                                            verifCompanhia = True
-                                            if companhia == '1':
-                                                companhia = dicRegioesBrasil[regiao]['companhiasAereas'][0]
-                                            elif companhia == '2':
-                                                companhia = dicRegioesBrasil[regiao]['companhiasAereas'][1]
-                                            elif companhia == '3':
-                                                companhia = dicRegioesBrasil[regiao]['companhiasAereas'][2]
-                                            print(f'Companhia escolhida: {companhia}')
-                                            input('Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-
-                    if companhia == '-':
-                        continue
-
-                    print('==================')
-                    print(f'Voo cadastrado com sucesso!')
-                    print(f'Código do voo: v-{contVoo + 1}\n')
-                    print(f'Origem: {origem}')
-                    print(f'Destino: {destino}\n')
-                    print(f'Aeroporto de origem: {selectAeroportoOrigem}')
-                    print(f'Aeroporto de destino: {selectAeroportoDestino}\n')
-
-                    if origem == destino:
-                        print('Número de escalas: 0')
-                        escalas = 0
-                    else:
-                        if regiaoOrigem == regiaoDestino:
-                            print('Número de escalas: 1')
-                            escalas = 1
-                        else:
-                            print('Número de escalas: 2')
-                            escalas = 2
-
-                    if origem == destino:
-                        print(f'Preço da passagem: R$ 1.500,00')
-                        precoPassagem = 'R$ 1.500,00'
-                    else:
-                        
-                        if regiaoOrigem == regiaoDestino:
-                            print(f'Preço da passagem: R$ 2.000,00')
-                            precoPassagem = 'R$ 2.000,00'
-                        else:
-                            print(f'Preço da passagem: R$ 2.500,00')
-                            precoPassagem = 'R$ 2.500,00'
-                        
-                    print(f'Número de lugares disponíveis: {lugares}')
-                    print(f'Data e hora do voo: {dataHora}\n')
-                    print(f'Companhia Aérea: {companhia}')
-                    print('==================')
-                    input('Pressione ENTER para continuar...')
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    contVoo += 1
-                    voos['v-' + str(contVoo)] = {
-                        'origem': origem,
-                        'destino': destino,
-                        'aeroportoDeOrigem': selectAeroportoOrigem,
-                        'aeroportoDeDestino': selectAeroportoDestino,
-                        'escalas': escalas,
-                        'precoPassagem': precoPassagem,
-                        'lugares': lugares,
-                        'dataHora': dataHora,
-                        'companhiaAerea': companhia
-                    }
-
-                elif optionVoo == '2':
-                    
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    
-                    if contVoo == 0:
-                        print('\nNão há voos cadastrados, por favor cadastre um!')
-                        input(f'Pressione ENTER para continuar...')
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                        continue
-                    else:
-                        verifSelectConsultaVoo = False
-                        while verifSelectConsultaVoo == False:
-                            print('Selecione uma opção de consulta por:')
-                            print('''
-1 - Código do voo
-2 - Origem
-3 - Destino
-4 - Listar voos com menor escala (até 1 escala)
-5 - Listar todos os voos''')
-                            selectConsultaVoo = input('--> ')
-
-                            if selectConsultaVoo == '-':
-                                break
-
-                            if selectConsultaVoo == '' or selectConsultaVoo not in listaNumeroVerificacao[0:5]:
-                                print(f'Opção inválida! Por favor, digite somente uma das opções disponíveis (1, 2, 3, 4 ou 5)')
-                                input(f'Pressione ENTER para continuar...')
-                                os.system('cls' if os.name == 'nt' else 'clear')
-                                continue
-
-                            else:
-                                verifSelectConsultaVoo = True
-
-                                if selectConsultaVoo == '1':
-
-                                    verifVooConsulta = False
-                                    while verifVooConsulta == False:
-                                        vooConsulta = input('Digite o código do voo que deseja consultar. Ex: v-1: ')
-
-                                        if vooConsulta == '-':
-                                            break
-
-                                        if vooConsulta == '' or vooConsulta[0] != 'v' or vooConsulta[1] != '-' or vooConsulta[2:].isdigit() == False:
-                                            print('Código inválido, por favor digite o código do voo!')
-                                            continue
-                                        else:
-                                            print('Voos cadastrados:')
-                                            if vooConsulta in voos.keys():
-                                                os.system('cls' if os.name == 'nt' else 'clear')
-                                                print('\n\n==================')
-                                                print(f'Código do voo: {vooConsulta}\n')
-                                                print(f'Origem: {voos[vooConsulta]['origem']}')
-                                                print(f'Destino: {voos[vooConsulta]['destino']}\n')
-                                                print(f'Aeroporto de origem: {voos[vooConsulta]['aeroportoDeOrigem']}')
-                                                print(f'Aeroporto de destino: {voos[vooConsulta]['aeroportoDeDestino']}\n')
-                                                print(f'Número de escalas: {voos[vooConsulta]['escalas']}')
-                                                print(f'Preço da passagem:  {voos[vooConsulta]['precoPassagem']}')
-                                                print(f'Número de lugares disponíveis: {voos[vooConsulta]['lugares']}')
-                                                print(f'Data e hora do voo: {voos[vooConsulta]['dataHora']}\n')
-                                                print(f'Companhia Aérea: {voos[vooConsulta]['companhiaAerea']}')
-                                                print('==================\n')
-                                                verifVooConsulta = True    
-                                            else:
-                                                print(f'Código não encontrado! Digite novamente.\n')
+                                                verifCompanhia = True
+                                                if companhia == '1':
+                                                    companhia = dicRegioesBrasil[regiao]['companhiasAereas'][0]
+                                                elif companhia == '2':
+                                                    companhia = dicRegioesBrasil[regiao]['companhiasAereas'][1]
+                                                elif companhia == '3':
+                                                    companhia = dicRegioesBrasil[regiao]['companhiasAereas'][2]
+                                                print(f'Companhia escolhida: {companhia}')
                                                 input('Pressione ENTER para continuar...')
                                                 os.system('cls' if os.name == 'nt' else 'clear')
+
+                        if companhia == '-':
+                            menuVoos = False
+                            continue
+
+                        print('==================')
+                        print(f'Voo cadastrado com sucesso!')
+                        print(f'Código do voo: v-{contVoo + 1}\n')
+                        print(f'Origem: {origem}')
+                        print(f'Destino: {destino}\n')
+                        print(f'Aeroporto de origem: {selectAeroportoOrigem}')
+                        print(f'Aeroporto de destino: {selectAeroportoDestino}\n')
+
+                        if origem == destino:
+                            print('Número de escalas: 0')
+                            escalas = 0
+                        else:
+                            if regiaoOrigem == regiaoDestino:
+                                print('Número de escalas: 1')
+                                escalas = 1
+                            else:
+                                print('Número de escalas: 2')
+                                escalas = 2
+
+                        if origem == destino:
+                            print(f'Preço da passagem: R$ 1.500,00')
+                            precoPassagem = 'R$ 1.500,00'
+                        else:
+                            
+                            if regiaoOrigem == regiaoDestino:
+                                print(f'Preço da passagem: R$ 2.000,00')
+                                precoPassagem = 'R$ 2.000,00'
+                            else:
+                                print(f'Preço da passagem: R$ 2.500,00')
+                                precoPassagem = 'R$ 2.500,00'
+                            
+                        print(f'Número de lugares disponíveis: {lugares}')
+                        print(f'Data e hora do voo: {dataHora}\n')
+                        print(f'Companhia Aérea: {companhia}')
+                        print('==================')
+                        input('Pressione ENTER para continuar...')
+                        os.system('cls' if os.name == 'nt' else 'clear')
+                        contVoo += 1
+                        voos['v-' + str(contVoo)] = {
+                            'origem': origem,
+                            'destino': destino,
+                            'aeroportoDeOrigem': selectAeroportoOrigem,
+                            'aeroportoDeDestino': selectAeroportoDestino,
+                            'escalas': escalas,
+                            'precoPassagem': precoPassagem,
+                            'lugares': lugares,
+                            'dataHora': dataHora,
+                            'companhiaAerea': companhia
+                        }
+
+                    elif optionVoo == '2':
+                        
+                        os.system('cls' if os.name == 'nt' else 'clear')
+                        
+                        if contVoo == 0:
+                            print('\nNão há voos cadastrados, por favor cadastre um!')
+                            input(f'Pressione ENTER para continuar...')
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            continue
+                        else:
+                            verifSelectConsultaVoo = False
+                            while verifSelectConsultaVoo == False:
+                                print('Selecione uma opção de consulta por:')
+                                print('''
+    1 - Código do voo
+    2 - Origem
+    3 - Destino
+    4 - Listar voos com menor escala (até 1 escala)
+    5 - Listar todos os voos''')
+                                selectConsultaVoo = input('--> ')
+
+                                if selectConsultaVoo == '-':
+                                    menuVoos = False
+                                    break
+
+                                if selectConsultaVoo == '' or selectConsultaVoo not in listaNumeroVerificacao[0:5]:
+                                    print(f'Opção inválida! Por favor, digite somente uma das opções disponíveis (1, 2, 3, 4 ou 5)')
+                                    input(f'Pressione ENTER para continuar...')
+                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                    continue
+
+                                else:
+                                    verifSelectConsultaVoo = True
+
+                                    if selectConsultaVoo == '1':
+
+                                        verifVooConsulta = False
+                                        while verifVooConsulta == False:
+                                            vooConsulta = input('Digite o código do voo que deseja consultar. Ex: v-1: ')
+
+                                            if vooConsulta == '-':
+                                                menuVoos = False
+                                                break
+
+                                            if vooConsulta == '' or vooConsulta[0] != 'v' or vooConsulta[1] != '-' or vooConsulta[2:].isdigit() == False:
+                                                print('Código inválido, por favor digite o código do voo!')
+                                                continue
+                                            else:
+                                                print('Voo cadastrado:')
+                                                if vooConsulta in voos.keys():
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                    print('\n\n==================')
+                                                    print(f'Código do voo: {vooConsulta}\n')
+                                                    print(f'Origem: {voos[vooConsulta]['origem']}')
+                                                    print(f'Destino: {voos[vooConsulta]['destino']}\n')
+                                                    print(f'Aeroporto de origem: {voos[vooConsulta]['aeroportoDeOrigem']}')
+                                                    print(f'Aeroporto de destino: {voos[vooConsulta]['aeroportoDeDestino']}\n')
+                                                    print(f'Número de escalas: {voos[vooConsulta]['escalas']}')
+                                                    print(f'Preço da passagem:  {voos[vooConsulta]['precoPassagem']}')
+                                                    print(f'Número de lugares disponíveis: {voos[vooConsulta]['lugares']}')
+                                                    print(f'Data e hora do voo: {voos[vooConsulta]['dataHora']}\n')
+                                                    print(f'Companhia Aérea: {voos[vooConsulta]['companhiaAerea']}')
+                                                    print('==================\n')
+                                                    verifVooConsulta = True    
+                                                else:
+                                                    print(f'Código não encontrado! Digite novamente.\n')
+                                                    input('Pressione ENTER para continuar...')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                    continue
+
+                                                input('Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                    
+
+                                    elif selectConsultaVoo == '2':
+                                        verifConsultaOrigem = False
+                                        while verifConsultaOrigem == False:
+                                            print(f'Consultar voos pela origem..\n')
+                                            consultaOrigem = input(f'Digite a origem:  ').title()
+
+                                            if consultaOrigem == '-':
+                                                menuVoos = False
+                                                break
+
+                                            if consultaOrigem.isalpha() and len(consultaOrigem) == 2:
+                                                consultaOrigem = consultaOrigem.upper()
+
+                                            if consultaOrigem == '' or consultaOrigem.isdigit() == True or len(consultaOrigem) < 2 or len(consultaOrigem) > 50:
+                                                print('Origem inválida, por favor, digite a Origem do voo!')
+                                                input('Pressione ENTER para continuar...')
                                                 continue
 
-                                            input('Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                
-
-                                elif selectConsultaVoo == '2':
-                                    verifConsultaOrigem = False
-                                    while verifConsultaOrigem == False:
-                                        print(f'Consultar voos pela origem..\n')
-                                        consultaOrigem = input(f'Digite a origem:  ').title()
-
-                                        if consultaOrigem == '-':
-                                            break
-
-                                        if consultaOrigem.isalpha() and len(consultaOrigem) == 2:
-                                            consultaOrigem = consultaOrigem.upper()
-
-                                        if consultaOrigem == '' or consultaOrigem.isdigit() == True or len(consultaOrigem) < 2 or len(consultaOrigem) > 50:
-                                            print('Origem inválida, por favor, digite a Origem do voo!')
-                                            input('Pressione ENTER para continuar...')
-                                            continue
-
-                                        else:
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                            for cod in voos:
-                                                if consultaOrigem in voos[cod]['origem']:
-                                                    print('==================')
-                                                    print(f'Código do voo: {cod}\n')
-                                                    print(f'Origem: {voos[cod]['origem']}')
-                                                    print(f'Destino: {voos[cod]['destino']}\n')
-                                                    print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
-                                                    print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
-                                                    print(f'Número de escalas: {voos[cod]['escalas']}')
-                                                    print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
-                                                    print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
-                                                    print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
-                                                    print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
-                                                    print('==================\n')
-                                                    verifConsultaOrigem = True  
-
-                                            if verifConsultaOrigem:
-                                                input(f'Pressione ENTER para continuar...')
-                                                os.system('cls' if os.name == 'nt' else 'clear')
-                                                    
-                                        if not verifConsultaOrigem:
-                                            print(f'Origem não encontrada! Por favor, digite novamente.')
-                                            input(f'Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                                
-
-                                elif selectConsultaVoo == '3':
-                                    verifConsultaDestino = False
-                                    while verifConsultaDestino == False:
-                                        print(f'Consultar voos pelo Destino..\n')
-                                        consultaDestino = input(f'Digite o destino:  ').title()
-
-                                        if consultaDestino == '-':
-                                            break
-
-                                        if consultaDestino.isalpha() and len(consultaDestino) == 2:
-                                            consultaDestino = consultaDestino.upper()
-
-                                        if consultaDestino == '' or consultaDestino.isdigit() == True or len(consultaDestino) < 2 or len(consultaDestino) > 50:
-                                            print('Destino inválido, por favor, digite o destino do voo!')
-                                            input(f'Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                            continue
-                                        else:
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                            for cod in voos:
-                                                if consultaDestino in voos[cod]['destino']:
-                                                    print('==================')
-                                                    print(f'Código do voo: {cod}\n')
-                                                    print(f'Origem: {voos[cod]['origem']}')
-                                                    print(f'Destino: {voos[cod]['destino']}\n')
-                                                    print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
-                                                    print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
-                                                    print(f'Número de escalas: {voos[cod]['escalas']}')
-                                                    print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
-                                                    print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
-                                                    print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
-                                                    print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
-                                                    print('==================\n')
-                                                    verifConsultaDestino = True
-                                            if verifConsultaDestino:
-                                                input(f'Pressione ENTER para continuar...')
-                                                os.system('cls' if os.name == 'nt' else 'clear')
-
-                                        if not verifConsultaDestino:
-                                            print(f'Origem não encontrada! Por favor, digite novamente.')
-                                            input(f'Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-
-                                elif selectConsultaVoo == '4':
-                                    verifConsultaEscala = False
-                                    while verifConsultaEscala == False:
-                                        print('''Consultar voos com menor escala pelo(a):
-1 - Origem
-2 - Destino
-''')   
-                                        consultaEscala = input('--> ')
-
-                                        if consultaEscala == '-':
-                                            break
-
-                                        if consultaEscala == '' or consultaEscala not in listaNumeroVerificacao[0:3]:
-                                            print('Opção inválida! Por favor, digite somente uma das opções disponíveis (1, 2)')
-                                            input(f'Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                            continue
-                                        else:
-                                            verifConsultaEscala = True
-                                            if consultaEscala == '1':
-                                                verifConsultaEscalaOrigem = False
-                                                while verifConsultaEscalaOrigem == False:
-                                                    consultaEscalaOrigem = input(f'Digite a origem:  ').title()
-
-                                                    if consultaEscalaOrigem == '-':
-                                                        break
-
-                                                    if consultaEscalaOrigem.isalpha() and len(consultaEscalaOrigem) == 2:
-                                                        consultaEscalaOrigem = consultaEscalaOrigem.upper()
-
-                                                    if consultaEscalaOrigem == '' or consultaEscalaOrigem.isdigit() == True or len(consultaEscalaOrigem) < 2 or len(consultaEscalaOrigem) > 50:
-                                                        print('Origem inválida, por favor, digite a origem do voo!')
-                                                        input(f'Pressione ENTER para continuar...')
-                                                        os.system('cls' if os.name == 'nt' else 'clear')
-                                                        continue
-                                                    else:
-                                                        
-                                                        for cod in voos:
-                                                            if consultaEscalaOrigem in voos[cod]['origem']:
-                                                                if voos[cod]['escalas'] < 2:
-
-                                                                    print('==================')
-                                                                    print(f'Código do voo: {cod}\n')
-                                                                    print(f'Origem: {voos[cod]['origem']}')
-                                                                    print(f'Destino: {voos[cod]['destino']}\n')
-                                                                    print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
-                                                                    print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
-                                                                    print(f'Número de escalas: {voos[cod]['escalas']}')
-                                                                    print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
-                                                                    print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
-                                                                    print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
-                                                                    print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
-                                                                    print('==================\n')
-                                                                    verifConsultaEscalaOrigem = True
-                                                    
-                                                    if not verifConsultaEscalaOrigem:
-                                                        print(f'Origem não encontrada ou voo possuí mais de uma escala! Por favor, digite novamente.')
-                                                        input(f'Pressione ENTER para continuar...')
-                                                        os.system('cls' if os.name == 'nt' else 'clear')
-
-                                            elif consultaEscala == '2':
-                                                verifConsultaEscalaDestino = False
-                                                while verifConsultaEscalaDestino == False:
-                                                    consultaEscalaDestino = input(f'Digite o Destino:  ').title()
-
-                                                    if consultaEscalaDestino == '-':
-                                                        break
-
-                                                    if consultaEscalaDestino.isalpha() and len(consultaEscalaDestino) == 2:
-                                                        consultaEscalaDestino = consultaEscalaDestino.upper()
-
-                                                    if consultaEscalaDestino == '' or consultaEscalaDestino.isdigit() == True or len(consultaEscalaDestino) < 2 or len(consultaEscalaDestino) > 50:
-                                                        print('Destino inválido, por favor, digite o destino do voo!')
-                                                        input(f'Pressione ENTER para continuar...')
-                                                        os.system('cls' if os.name == 'nt' else 'clear')
-                                                        continue
-                                                    else:
-                                                        
-                                                        for cod in voos:
-                                                            if consultaEscalaDestino in voos[cod]['destino']:
-                                                                if voos[cod]['escalas'] < 2:
-                                                                    print('==================')
-                                                                    print(f'Código do voo: {cod}\n')
-                                                                    print(f'Origem: {voos[cod]['origem']}')
-                                                                    print(f'Destino: {voos[cod]['destino']}\n')
-                                                                    print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
-                                                                    print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
-                                                                    print(f'Número de escalas: {voos[cod]['escalas']}')
-                                                                    print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
-                                                                    print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
-                                                                    print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
-                                                                    print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
-                                                                    print('==================\n')
-                                                                    verifConsultaEscalaDestino = True
-                                                    
-                                                    if not verifConsultaEscalaDestino:
-                                                        print(f'Destino não encontrado! Por favor, digite novamente.')
-                                                        input(f'Pressione ENTER para continuar...')
-                                                        os.system('cls' if os.name == 'nt' else 'clear')
-
-                                        input(f'Pressione ENTER para continuar...')
-                                        os.system('cls' if os.name == 'nt' else 'clear')
-
-                                elif selectConsultaVoo == '5':
-                                    print(f'Listando todos os voos..')
-                                    for cod, dados in voos.items():
-                                        print('==================')
-                                        print(f'Código do voo: {cod}\n')
-                                        print(f'Origem: {dados['origem']}')
-                                        print(f'Destino: {dados['destino']}\n')
-                                        print(f'Aeroporto de origem: {dados['aeroportoDeOrigem']}')
-                                        print(f'Aeroporto de destino: {dados['aeroportoDeDestino']}\n')
-                                        print(f'Número de escalas: {dados['escalas']}')
-                                        print(f'Preço da passagem:  {dados['precoPassagem']}')
-                                        print(f'Número de lugares disponíveis: {dados['lugares']}')
-                                        print(f'Data e hora do voo: {dados['dataHora']}\n')
-                                        print(f'Companhia Aérea: {dados['companhiaAerea']}')
-                                        print('==================\n')
-                                    input(f'Pressione ENTER para continua...')
-                                    os.system('cls' if os.name == 'nt' else 'clear')
-                
-                elif optionVoo == '3':
-                    if contVoo == 0:
-                        print('\nAinda não há voos cadastrados!')
-                        input('Pressione ENTER para continuar...')
-                        os.system('cls' if os.name == 'nt' else 'clear')
-                    else:
-                        verifOptionPassageirosVoo = False
-                        while verifOptionPassageirosVoo == False:
-                            print(f'Deseja listar todos os voos?')
-                            print('''
-1 - Sim
-2 - Não''')
-                            optionListarVoos = input('--> ')
-
-                            if optionListarVoos == '-':
-                                break
-
-                            if len(optionListarVoos) != 1 or optionListarVoos not in listaNumeroVerificacao[0:2]:
-                                print('Opção inválida, por favor digite uma opção válida!')
-                                continue
-                            else:
-                                if optionListarVoos == '1':
-                                    
-                                    os.system('cls' if os.name == 'nt' else 'clear')
-                                    print('Listando voos com passageiros...')
-                                    
-                                    if len(dicPassagensVoos) > 0:
-
-                                        for voo in dicPassagensVoos:
-                                            contPassageirosVoo = 0
-                                            for cpf in dicPassagensVoos[voo]:
-                                                if dicPassagensVoos[voo][cpf]['acompanhante'] != {''}:
-                                                    contPassageirosVoo += len(dicPassagensVoos[voo][cpf]['acompanhante'].keys())+1
-                                                else:
-                                                    contPassageirosVoo += 1
-                                            print(f'{voo}: {contPassageirosVoo:.0f} passageiros')
-                                            optionListarVoos = '2'
-                                            verifOptionPassageirosVoo = True
-                                    else:
-                                        print(f'Não há voos com passageiros cadastrados!')
-                                        input('Pressione ENTER para continuar...')
-                                        os.system('cls' if os.name == 'nt' else 'clear')
-                                        break                  
-                                if optionListarVoos == '2':
-
-                                    verifCodVoo = False
-                                    while verifCodVoo == False:
-
-                                        codVoo = input('Digite o código do voo que deseja exibir os passageiros. Ex: v-1: ')
-
-                                        if codVoo == '-':
-                                            break
-
-                                        if codVoo == '' or codVoo not in voos.keys():
-                                            print('Código inválido, por favor digite o código do voo!')
-                                            continue
-                                        else:
-                                            verifOptionPassageirosVoo = True
-                                            if codVoo in dicPassagensVoos.keys():
-                                                        print('==================')
-                                                        print(f'Código do voo: {codVoo}')
-                                                        print(f'Número de passageiros: {contPassageirosVoo:.0f}')
-                                                        print(f'Lugares disponíveis: {voos[codVoo]['lugares']}')
-                                                        print('==================\n')
-                                                        for cpf, dados in dicPassagensVoos[codVoo].items():
-                                                            print('==================')
-                                                            print(f'CPF: {cpf}')
-                                                            print(f'Nome: {dados['nome']}')
-                                                            for cpfAcompanhante in passageiros[cpf]['acompanhante']:
-                                                                print(f'Acompanhantes:\n - CPF: {cpfAcompanhante}\n - Nome: {passageiros[cpf]['acompanhante'][cpfAcompanhante]['nome']}' 
-                                                                    if passageiros[cpf]['acompanhante'] != ''
-                                                                    else '')
-                                                            print('==================')
-                                                        verifCodVoo = True
                                             else:
                                                 os.system('cls' if os.name == 'nt' else 'clear')
-                                                print('Código do voo inválido, por favor digite o código do voo!')
-                                                input('Pressione ENTER para continuar...')
+                                                for cod in voos:
+                                                    if consultaOrigem in voos[cod]['origem']:
+                                                        print('==================')
+                                                        print(f'Código do voo: {cod}\n')
+                                                        print(f'Origem: {voos[cod]['origem']}')
+                                                        print(f'Destino: {voos[cod]['destino']}\n')
+                                                        print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
+                                                        print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
+                                                        print(f'Número de escalas: {voos[cod]['escalas']}')
+                                                        print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
+                                                        print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
+                                                        print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
+                                                        print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
+                                                        print('==================\n')
+                                                        verifConsultaOrigem = True  
+
+                                                if verifConsultaOrigem:
+                                                    input(f'Pressione ENTER para continuar...')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                        
+                                            if not verifConsultaOrigem:
+                                                print(f'Origem não encontrada! Por favor, digite novamente.')
+                                                input(f'Pressione ENTER para continuar...')
                                                 os.system('cls' if os.name == 'nt' else 'clear')
-                                    else:
-                                        input('Pressione ENTER para continuar...')
-                                        os.system('cls' if os.name == 'nt' else 'clear')
-                elif optionVoo == '4':
+                                                    
 
-                    if contVoo == 0:
-                        print('\nAinda não há voos cadastrados!')
-                        input('Pressione ENTER para continuar...')
-                    else:
-                        
-                        verifMenuPassagem = False
-                        while verifMenuPassagem == False:
+                                    elif selectConsultaVoo == '3':
+                                        verifConsultaDestino = False
+                                        while verifConsultaDestino == False:
+                                            print(f'Consultar voos pelo Destino..\n')
+                                            consultaDestino = input(f'Digite o destino:  ').title()
+
+                                            if consultaDestino == '-':
+                                                menuVoos = False
+                                                break
+
+                                            if consultaDestino.isalpha() and len(consultaDestino) == 2:
+                                                consultaDestino = consultaDestino.upper()
+
+                                            if consultaDestino == '' or consultaDestino.isdigit() == True or len(consultaDestino) < 2 or len(consultaDestino) > 50:
+                                                print('Destino inválido, por favor, digite o destino do voo!')
+                                                input(f'Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                continue
+                                            else:
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                for cod in voos:
+                                                    if consultaDestino in voos[cod]['destino']:
+                                                        print('==================')
+                                                        print(f'Código do voo: {cod}\n')
+                                                        print(f'Origem: {voos[cod]['origem']}')
+                                                        print(f'Destino: {voos[cod]['destino']}\n')
+                                                        print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
+                                                        print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
+                                                        print(f'Número de escalas: {voos[cod]['escalas']}')
+                                                        print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
+                                                        print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
+                                                        print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
+                                                        print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
+                                                        print('==================\n')
+                                                        verifConsultaDestino = True
+                                                if verifConsultaDestino:
+                                                    input(f'Pressione ENTER para continuar...')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+
+                                            if not verifConsultaDestino:
+                                                print(f'Origem não encontrada! Por favor, digite novamente.')
+                                                input(f'Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+
+                                    elif selectConsultaVoo == '4':
+                                        verifConsultaEscala = False
+                                        while verifConsultaEscala == False:
+                                            print('''Consultar voos com menor escala pelo(a):
+    1 - Origem
+    2 - Destino
+    ''')   
+                                            consultaEscala = input('--> ')
+
+                                            if consultaEscala == '-':
+                                                menuVoos = False
+                                                break
+
+                                            if consultaEscala == '' or consultaEscala not in listaNumeroVerificacao[0:3]:
+                                                print('Opção inválida! Por favor, digite somente uma das opções disponíveis (1, 2)')
+                                                input(f'Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                continue
+                                            else:
+                                                verifConsultaEscala = True
+                                                if consultaEscala == '1':
+                                                    verifConsultaEscalaOrigem = False
+                                                    while verifConsultaEscalaOrigem == False:
+                                                        consultaEscalaOrigem = input(f'Digite a origem:  ').title()
+
+                                                        if consultaEscalaOrigem == '-':
+                                                            menuVoos = False
+                                                            break
+
+                                                        if consultaEscalaOrigem.isalpha() and len(consultaEscalaOrigem) == 2:
+                                                            consultaEscalaOrigem = consultaEscalaOrigem.upper()
+
+                                                        if consultaEscalaOrigem == '' or consultaEscalaOrigem.isdigit() == True or len(consultaEscalaOrigem) < 2 or len(consultaEscalaOrigem) > 50:
+                                                            print('Origem inválida, por favor, digite a origem do voo!')
+                                                            input(f'Pressione ENTER para continuar...')
+                                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                                            continue
+                                                        else:
+                                                            
+                                                            for cod in voos:
+                                                                if consultaEscalaOrigem in voos[cod]['origem']:
+                                                                    if voos[cod]['escalas'] < 2:
+
+                                                                        print('==================')
+                                                                        print(f'Código do voo: {cod}\n')
+                                                                        print(f'Origem: {voos[cod]['origem']}')
+                                                                        print(f'Destino: {voos[cod]['destino']}\n')
+                                                                        print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
+                                                                        print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
+                                                                        print(f'Número de escalas: {voos[cod]['escalas']}')
+                                                                        print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
+                                                                        print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
+                                                                        print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
+                                                                        print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
+                                                                        print('==================\n')
+                                                                        verifConsultaEscalaOrigem = True
+                                                        
+                                                        if not verifConsultaEscalaOrigem:
+                                                            print(f'Origem não encontrada ou voo possuí mais de uma escala! Por favor, digite novamente.')
+                                                            input(f'Pressione ENTER para continuar...')
+                                                            os.system('cls' if os.name == 'nt' else 'clear')
+
+                                                elif consultaEscala == '2':
+                                                    verifConsultaEscalaDestino = False
+                                                    while verifConsultaEscalaDestino == False:
+                                                        consultaEscalaDestino = input(f'Digite o Destino:  ').title()
+
+                                                        if consultaEscalaDestino == '-':
+                                                            menuVoos = False
+                                                            break
+
+                                                        if consultaEscalaDestino.isalpha() and len(consultaEscalaDestino) == 2:
+                                                            consultaEscalaDestino = consultaEscalaDestino.upper()
+
+                                                        if consultaEscalaDestino == '' or consultaEscalaDestino.isdigit() == True or len(consultaEscalaDestino) < 2 or len(consultaEscalaDestino) > 50:
+                                                            print('Destino inválido, por favor, digite o destino do voo!')
+                                                            input(f'Pressione ENTER para continuar...')
+                                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                                            continue
+                                                        else:
+                                                            
+                                                            for cod in voos:
+                                                                if consultaEscalaDestino in voos[cod]['destino']:
+                                                                    if voos[cod]['escalas'] < 2:
+                                                                        print('==================')
+                                                                        print(f'Código do voo: {cod}\n')
+                                                                        print(f'Origem: {voos[cod]['origem']}')
+                                                                        print(f'Destino: {voos[cod]['destino']}\n')
+                                                                        print(f'Aeroporto de origem: {voos[cod]['aeroportoDeOrigem']}')
+                                                                        print(f'Aeroporto de destino: {voos[cod]['aeroportoDeDestino']}\n')
+                                                                        print(f'Número de escalas: {voos[cod]['escalas']}')
+                                                                        print(f'Preço da passagem:  {voos[cod]['precoPassagem']}')
+                                                                        print(f'Número de lugares disponíveis: {voos[cod]['lugares']}')
+                                                                        print(f'Data e hora do voo: {voos[cod]['dataHora']}\n')
+                                                                        print(f'Companhia Aérea: {voos[cod]['companhiaAerea']}')
+                                                                        print('==================\n')
+                                                                        verifConsultaEscalaDestino = True
+                                                        
+                                                        if not verifConsultaEscalaDestino:
+                                                            print(f'Destino não encontrado! Por favor, digite novamente.')
+                                                            input(f'Pressione ENTER para continuar...')
+                                                            os.system('cls' if os.name == 'nt' else 'clear')
+
+                                            input(f'Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+
+                                    elif selectConsultaVoo == '5':
+                                        if not voos == {}:
+                                            print(f'Listando todos os voos..')
+                                            for cod, dados in voos.items():
+                                                print('==================')
+                                                print(f'Código do voo: {cod}\n')
+                                                print(f'Origem: {dados['origem']}')
+                                                print(f'Destino: {dados['destino']}\n')
+                                                print(f'Aeroporto de origem: {dados['aeroportoDeOrigem']}')
+                                                print(f'Aeroporto de destino: {dados['aeroportoDeDestino']}\n')
+                                                print(f'Número de escalas: {dados['escalas']}')
+                                                print(f'Preço da passagem:  {dados['precoPassagem']}')
+                                                print(f'Número de lugares disponíveis: {dados['lugares']}')
+                                                print(f'Data e hora do voo: {dados['dataHora']}\n')
+                                                print(f'Companhia Aérea: {dados['companhiaAerea']}')
+                                                print('==================\n')
+                                            input(f'Pressione ENTER para continua...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                        else:  
+                                            print(f'Não há voos cadastrados!')
+                                            input(f'Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                    
+                    elif optionVoo == '3':
+                        if contVoo == 0:
+                            print('\nAinda não há voos cadastrados!')
+                            input('Pressione ENTER para continuar...')
                             os.system('cls' if os.name == 'nt' else 'clear')
-                            print('''
-        === MENU DE PASSAGENS ===
-1 - Vender passagem
-2 - Cancelar passagem
-3 - Voltar ao menu principal
-                            ''')
-                            opcaoPassagem = input('--> ')
+                        else:
+                            verifOptionPassageirosVoo = False
+                            while verifOptionPassageirosVoo == False:
+                                print(f'Deseja listar todos os voos?')
+                                print('''
+    1 - Sim
+    2 - Não''')
+                                optionListarVoos = input('--> ')
 
-                            if opcaoPassagem == '-':
-                                break
+                                if optionListarVoos == '-':
+                                    menuVoos = False
+                                    break
 
-                            if len(opcaoPassagem) != 1 or opcaoPassagem not in ['1', '2', '3']:
-                                print('Opção inválida, por favor digite uma opção válida!')
-                                input('Pressione ENTER para continuar...')
+                                if len(optionListarVoos) != 1 or optionListarVoos not in listaNumeroVerificacao[0:2]:
+                                    print('Opção inválida, por favor digite uma opção válida!')
+                                    continue
+                                else:
+                                    if optionListarVoos == '1':
+                                        
+                                        os.system('cls' if os.name == 'nt' else 'clear')
+                                        print('Listando voos com passageiros...')
+                                        
+                                        if len(dicPassagensVoos) > 0:
+
+                                            for voo in dicPassagensVoos:
+                                                contPassageirosVoo = 0
+                                                for cpf in dicPassagensVoos[voo]:
+                                                    if dicPassagensVoos[voo][cpf]['acompanhante'] != {''}:
+                                                        contPassageirosVoo += len(dicPassagensVoos[voo][cpf]['acompanhante'].keys())+1
+                                                    else:
+                                                        contPassageirosVoo += 1
+                                                print(f'{voo}: {contPassageirosVoo:.0f} passageiros | Origem: {voos[voo]['origem']} -> Destino: {voos[voo]['destino']} | Lugares: {voos[voo]['lugares']} | Data/Hora: {voos[voo]['dataHora']} | Companhia: {voos[voo]['companhiaAerea']}')
+                                                optionListarVoos = '2'
+                                                verifOptionPassageirosVoo = True
+                                        else:
+                                            print(f'Não há voos com passageiros cadastrados!')
+                                            input('Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                            break                  
+                                    if optionListarVoos == '2':
+
+                                        verifCodVoo = False
+                                        while verifCodVoo == False:
+
+                                            codVoo = input('Digite o código do voo que deseja exibir os passageiros. Ex: v-1: ')
+
+                                            if codVoo == '-':
+                                                menuVoos = False
+                                                break
+
+                                            if codVoo == '' or codVoo not in voos.keys():
+                                                print('Código inválido, por favor digite o código do voo!')
+                                                continue
+                                            else:
+                                                verifOptionPassageirosVoo = True
+                                                if codVoo in dicPassagensVoos.keys():
+                                                            print('==================')
+                                                            print(f'Código do voo: {codVoo} | Origem: {voos[codVoo]['origem']} -> Destino: {voos[codVoo]['destino']} | Data/Hora: {voos[codVoo]['dataHora']} | Companhia: {voos[codVoo]['companhiaAerea']}')
+                                                            print(f'Número de passageiros: {contPassageirosVoo:.0f}')
+                                                            print(f'Lugares disponíveis: {voos[codVoo]['lugares']}')
+                                                            print('==================\n')
+                                                            for cpf, dados in dicPassagensVoos[codVoo].items():
+                                                                print('==================')
+                                                                print(f'CPF: {cpf}')
+                                                                print(f'Nome: {dados['nome']}')
+                                                                for cpfAcompanhante in dicPassagensVoos[codVoo][cpf]['acompanhante']:
+                                                                    print(f'Acompanhantes:\n - CPF: {cpfAcompanhante}\n - Nome: {dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfAcompanhante]['nome']}' 
+                                                                        if dicPassagensVoos[codVoo][cpf]['acompanhante'] != ''
+                                                                        else '')
+                                                                print('==================')
+                                                            verifCodVoo = True
+                                                else:
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                    print('Código do voo inválido, por favor digite o código do voo!')
+                                                    input('Pressione ENTER para continuar...')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                        else:
+                                            input('Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                    elif optionVoo == '4':
+
+                        if contVoo == 0:
+                            print('\nAinda não há voos cadastrados!')
+                            input('Pressione ENTER para continuar...')
+                        else:
+                            
+                            verifMenuPassagem = False
+                            while verifMenuPassagem == False:
                                 os.system('cls' if os.name == 'nt' else 'clear')
-                                continue
+                                print('''
+            === MENU DE PASSAGENS ===
+    1 - Vender passagem
+    2 - Cancelar passagem
+    3 - Voltar ao menu principal
+                                ''')
+                                opcaoPassagem = input('--> ')
 
-                            if opcaoPassagem == '1':
-                                
-                                verifCodVoo = False
-                                while verifCodVoo == False:
+                                if opcaoPassagem == '-':
+                                    menuVoos = False
+                                    break
+
+                                if len(opcaoPassagem) != 1 or opcaoPassagem not in ['1', '2', '3']:
+                                    print('Opção inválida, por favor digite uma opção válida!')
+                                    input('Pressione ENTER para continuar...')
                                     os.system('cls' if os.name == 'nt' else 'clear')
-                                    print('Voos disponíveis:')
-                                    for codVoo, dadosVoo in voos.items():
-                                        print(f'{codVoo}: {dadosVoo['origem']} -> {dadosVoo['destino']} | Lugares: {dadosVoo['lugares']}')
-                                
-                                    codVoo = input('Digite o código do voo desejado: ')
-                                    contPassageirosVoo = 0
-                                    passagem = ''
-                                    if codVoo == '-':
-                                        break
+                                    continue
 
-                                    if codVoo not in voos or codVoo == '':
-                                        print('Código de voo inválido!')
-                                        input('Pressione ENTER para continuar...')
+                                if opcaoPassagem == '1':
+                                    
+                                    verifCodVoo = False
+                                    while verifCodVoo == False:
                                         os.system('cls' if os.name == 'nt' else 'clear')
-                                        continue
+                                        print('Voos disponíveis:')
+                                        for codVoo, dadosVoo in voos.items():
+                                            print(f'{codVoo}: {dadosVoo['origem']} -> {dadosVoo['destino']} | Lugares: {dadosVoo['lugares']} | Data/Hora: {dadosVoo['dataHora']} | Companhia: {dadosVoo['companhiaAerea']}')
+                                    
+                                        codVoo = input('Digite o código do voo desejado: ')
+                                        contPassageirosVoo = 0
+                                        passagem = ''
 
-                                    if voos[codVoo]['lugares'] == 0:
-                                        print('Não há lugares disponíveis neste voo!')
-                                        input('Pressione ENTER para continuar...')
-                                        os.system('cls' if os.name == 'nt' else 'clear')
-                                        continue
+                                        if codVoo == '-':
+                                            menuVoos = False
+                                            break
 
-                                    verifCodVoo = True
+                                        if codVoo not in voos or codVoo == '':
+                                            print('Código de voo inválido!')
+                                            input('Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                            continue
+
+                                        if voos[codVoo]['lugares'] == 0:
+                                            print('Não há lugares disponíveis neste voo!')
+                                            input('Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                            continue
+
+                                        verifCodVoo = True
 
                                     if codVoo not in dicPassagensVoos:
                                         dicPassagensVoos[codVoo] = {}
-
-                                verifCpfVenda = False
-                                while verifCpfVenda == False:
-                                    cpfVenda = input('Digite o CPF do passageiro: ')
-
-                                    if cpfVenda == '-':
-                                        break
                                     
-                                    if len(cpfVenda) == 14:
-                                        contNumCpf = 0
-                                        contCarCpf = 0
-                                        for i in cpfVenda:
-                                            if i.isdigit():
-                                                contNumCpf += 1
-                                            if listCaracteresEspeciais.count(i) == 1:
-                                                contCarCpf += 1
+                                    if codVoo == '-':
+                                            menuVoos = False
+                                            continue
+                                    verifCpfVenda = False
+                                    while verifCpfVenda == False:
+                                        cpfVenda = input('Digite o CPF do passageiro: ')
 
-                                        if contNumCpf == 11 and contCarCpf == 3 and cpfVenda[3] == '.' and cpfVenda[7] == '.' and cpfVenda[11] == '-':
-                                            cpfVendaFormatado = cpfVenda
+                                        if cpfVenda == '-':
+                                            menuVoos = False
+                                            break
+                                        
+                                        if len(cpfVenda) == 14:
+                                            contNumCpf = 0
+                                            contCarCpf = 0
+                                            for i in cpfVenda:
+                                                if i.isdigit():
+                                                    contNumCpf += 1
+                                                if listCaracteresEspeciais.count(i) == 1:
+                                                    contCarCpf += 1
+
+                                            if contNumCpf == 11 and contCarCpf == 3 and cpfVenda[3] == '.' and cpfVenda[7] == '.' and cpfVenda[11] == '-':
+                                                cpfVendaFormatado = cpfVenda
+                                                verifCpfVenda = True
+                                            else:
+                                                print('CPF inválido, por favor digite novamente!')
+                                                input('Pressione ENTER para continuar...')
+                                                continue
+
+                                        elif len(cpfVenda) == 11 and cpfVenda.isdigit():
+                                            cpfVendaFormatado = cpfVenda[0:3] + '.' + cpfVenda[3:6] + '.' + cpfVenda[6:9] + '-' + cpfVenda[9:11]
                                             verifCpfVenda = True
                                         else:
                                             print('CPF inválido, por favor digite novamente!')
                                             input('Pressione ENTER para continuar...')
                                             continue
 
-                                    elif len(cpfVenda) == 11 and cpfVenda.isdigit():
-                                        cpfVendaFormatado = cpfVenda[0:3] + '.' + cpfVenda[3:6] + '.' + cpfVenda[6:9] + '-' + cpfVenda[9:11]
-                                        verifCpfVenda = True
-                                    else:
-                                        print('CPF inválido, por favor digite novamente!')
+                                    if cpfVenda == '-':
+                                            menuVoos = False
+                                            break
+
+                                    if cpfVendaFormatado not in passageiros:
+                                        print('Passageiro não cadastrado! Cadastre o passageiro antes de comprar a passagem.')
                                         input('Pressione ENTER para continuar...')
+                                        os.system('cls' if os.name == 'nt' else 'clear')
                                         continue
 
-                                if cpfVenda == '-':
-                                        break
+                                    if int(passageiros[cpfVendaFormatado]['idade']) < 18:
+                                        print(f'{passageiros[cpfVendaFormatado]['nome']} não possui idade suficiente para comprar passagens aéreas')
+                                        continue
 
-                                if cpfVendaFormatado not in passageiros:
-                                    print('Passageiro não cadastrado! Cadastre o passageiro antes de comprar a passagem.')
-                                    input('Pressione ENTER para continuar...')
-                                    os.system('cls' if os.name == 'nt' else 'clear')
-                                    continue
+                                    if cpfVendaFormatado in dicPassagensVoos[codVoo]:
+                                        print(f'Este passageiro ({passageiros[cpfVendaFormatado]['nome']}) já possui uma ou mais passagens compradas!')
+                                        print(f'Deseja incluir uma nova passagem? \n\n1-SIM\n\n2-NÃO')
+                                        print(f'obs: Passageiros menores de idade são incluidos como acompanhantes.')
 
-                                if int(passageiros[cpfVendaFormatado]['idade']) < 18:
-                                    print(f'{passageiros[cpfVendaFormatado]['nome']} não possui idade suficiente para comprar passagens aéreas')
-                                    continue
+                                        verifOpcaoVendaPassagem = False
+                                        while not verifOpcaoVendaPassagem:
 
-                                if cpfVendaFormatado in dicPassagensVoos[codVoo]:
-                                    print(f'Este passageiro ({passageiros[cpfVendaFormatado]['nome']}) já possui uma ou mais passagens compradas!')
-                                    print(f'Deseja incluir uma nova passagem? \n\n1-SIM\n\n2-NÃO')
-                                    print(f'obs: Passageiros menores de idade são incluidos como acompanhantes.')
+                                            opcaoVendaPassagem = input('--> ')
 
-                                    verifOpcaoVendaPassagem = False
-                                    while not verifOpcaoVendaPassagem:
+                                            if opcaoVendaPassagem == '-':
+                                                menuVoos = False
+                                                break
+                                            
+                                            if opcaoVendaPassagem == '' or opcaoVendaPassagem not in ['1', '2']:
+                                                print(f'Opção inválida! Digite somente 1 ou 2.')
+                                                input('Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
 
-                                        opcaoVendaPassagem = input('--> ')
+                                            else:
+                                                verifOpcaoVendaPassagem = True
+                                                if opcaoVendaPassagem == '1':
+                                                    verifQtdPassagens = False
+                                                    while not verifQtdPassagens:
 
-                                        if opcaoVendaPassagem == '-':
-                                            break
-                                        
-                                        if opcaoVendaPassagem == '' or opcaoVendaPassagem not in ['1', '2']:
-                                            print(f'Opção inválida! Digite somente 1 ou 2.')
-                                            input('Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
-
-                                        else:
-                                            verifOpcaoVendaPassagem = True
-                                            if opcaoVendaPassagem == '1':
-                                                verifQtdPassagens = False
-                                                while not verifQtdPassagens:
-
-                                                    qtdPassagens = input(f'Digite o número de passagens que deseja incluir: ')
-                                                    
-                                                    if qtdPassagens == '-':
-                                                        break
-                                                    
-                                                    elif qtdPassagens == '' or not qtdPassagens.isdigit() or int(qtdPassagens) > voos[codVoo]['lugares'] or int(qtdPassagens) < 1 :
-                                                        print(f'Quantidade ínvalida! Por favor, digite novamente.')
-                                                        input(f'Pressione ENTER para continuar..')
-                                                        os.system('cls' if os.name == 'nt' else 'clear')
+                                                        qtdPassagens = input(f'Digite o número de passagens que deseja incluir: ')
                                                         
-                                                    else:
-                                                        verifQtdPassagens = True
-                                                        qtdPassagens = int(qtdPassagens)
-                                                        listaPassageirosIncluidos = []
+                                                        if qtdPassagens == '-':
+                                                            menuVoos = False
+                                                            break
+                                                        
+                                                        elif qtdPassagens == '' or not qtdPassagens.isdigit() or int(qtdPassagens) > voos[codVoo]['lugares'] or int(qtdPassagens) < 1 :
+                                                            print(f'Quantidade ínvalida! Por favor, digite novamente.')
+                                                            input(f'Pressione ENTER para continuar..')
+                                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                                            
+                                                        else:
+                                                            verifQtdPassagens = True
+                                                            qtdPassagens = int(qtdPassagens)
+                                                            listaPassageirosIncluidos = []
 
-                                                        if qtdPassagens >= 1:
-                                                            contCadastroViagem = 1
-                                                            while contCadastroViagem <= qtdPassagens:
+                                                            if qtdPassagens >= 1:
+                                                                contCadastroViagem = 1
+                                                                while contCadastroViagem <= qtdPassagens:
 
-                                                                if len(dicPassagensVoos[codVoo].keys()) > 0:
-                                                                    for cpf in dicPassagensVoos[codVoo]:
-                                                                        if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
-                                                                            contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                                                    if len(dicPassagensVoos[codVoo].keys()) > 0:
+                                                                        for cpf in dicPassagensVoos[codVoo]:
+                                                                            if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
+                                                                                contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                                                            else:
+                                                                                contPassageirosVoo += 1
+
+                                                                    passagem = f'p{contPassageirosVoo+1}_{codVoo}'
+
+                                                                    auxContPassageirosVoo = contPassageirosVoo
+
+                                                                    passagemUtilizada = True
+                                                                    while passagemUtilizada:
+                                                                        if passagem in listaPassagens:
+                                                                            auxContPassageirosVoo += 1
+                                                                            passagem = f'p{auxContPassageirosVoo+1}_{codVoo}'
                                                                         else:
-                                                                            contPassageirosVoo += 1
+                                                                            passagemUtilizada = False
 
-                                                                passagem = f'p{contPassageirosVoo+1}_{codVoo}'
+                                                                    auxContPassageirosVoo = 0
 
-                                                                auxContPassageirosVoo = contPassageirosVoo
+                                                                    print(f'Digite os dados do {contCadastroViagem+1}º passageiro: ')
+                                                                    verifCpfPassageiro = False
+                                                                    while verifCpfPassageiro == False:
+                                                                        cpfPassageiro = input('Digite o CPF do passageiro: ')
 
-                                                                while passagem in listaPassagens:
-                                                                    passagem = passagem.replace(f'p{auxContPassageirosVoo+1}', f'p{auxContPassageirosVoo+2}')
-                                                                    auxContPassageirosVoo += 1
+                                                                        if cpfPassageiro == '-':
+                                                                            menuVoos = False
+                                                                            break
+                                                                        
+                                                                        if len(cpfPassageiro) == 14:
+                                                                            contNumCpf = 0
+                                                                            contCarCpf = 0
+                                                                            for i in cpfPassageiro:
+                                                                                if i.isdigit():
+                                                                                    contNumCpf += 1
+                                                                                if listCaracteresEspeciais.count(i) == 1:
+                                                                                    contCarCpf += 1
 
-                                                                auxContPassageirosVoo = 0
+                                                                            if contNumCpf == 11 and contCarCpf == 3 and cpfPassageiro[3] == '.' and cpfPassageiro[7] == '.' and cpfPassageiro[11] == '-':
+                                                                                cpfAcompanhanteFormatado = cpfPassageiro
+                                                                                verifCpfPassageiro = True
+                                                                            else:
+                                                                                print('CPF inválido, por favor digite novamente!')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
 
-                                                                print(f'Digite os dados do {contCadastroViagem+1}º passageiro: ')
-                                                                verifCpfPassageiro = False
-                                                                while verifCpfPassageiro == False:
-                                                                    cpfPassageiro = input('Digite o CPF do passageiro: ')
-
-                                                                    if cpfPassageiro == '-':
-                                                                        break
-                                                                    
-                                                                    if len(cpfPassageiro) == 14:
-                                                                        contNumCpf = 0
-                                                                        contCarCpf = 0
-                                                                        for i in cpfPassageiro:
-                                                                            if i.isdigit():
-                                                                                contNumCpf += 1
-                                                                            if listCaracteresEspeciais.count(i) == 1:
-                                                                                contCarCpf += 1
-
-                                                                        if contNumCpf == 11 and contCarCpf == 3 and cpfPassageiro[3] == '.' and cpfPassageiro[7] == '.' and cpfPassageiro[11] == '-':
-                                                                            cpfAcompanhanteFormatado = cpfPassageiro
+                                                                        elif len(cpfPassageiro) == 11 and cpfPassageiro.isdigit():
+                                                                            cpfAcompanhanteFormatado = cpfPassageiro[0:3] + '.' + cpfPassageiro[3:6] + '.' + cpfPassageiro[6:9] + '-' + cpfPassageiro[9:11]
                                                                             verifCpfPassageiro = True
                                                                         else:
                                                                             print('CPF inválido, por favor digite novamente!')
                                                                             input('Pressione ENTER para continuar...')
                                                                             continue
 
-                                                                    elif len(cpfPassageiro) == 11 and cpfPassageiro.isdigit():
-                                                                        cpfAcompanhanteFormatado = cpfPassageiro[0:3] + '.' + cpfPassageiro[3:6] + '.' + cpfPassageiro[6:9] + '-' + cpfPassageiro[9:11]
-                                                                        verifCpfPassageiro = True
-                                                                    else:
-                                                                        print('CPF inválido, por favor digite novamente!')
-                                                                        input('Pressione ENTER para continuar...')
-                                                                        continue
-
-                                                                if cpfPassageiro == '-':
-                                                                        break
-                                                                
-                                                                if cpfAcompanhanteFormatado in passageiros or cpfAcompanhanteFormatado in passageiros[cpfVendaFormatado]['acompanhante']:
-                                                                    if cpfAcompanhanteFormatado not in passageiros[cpfVendaFormatado]['acompanhante']:
-                                                                        if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo]:
-                                                                            voos[codVoo]['lugares'] -= 1
-                                                                            dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
-                                                                            'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
-                                                                            'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                            'telefone' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                            'passagem' : {
-                                                                                passagem : {'pagador' : cpfVendaFormatado}
-                                                                                }
-                                                                            }
-                                                                            listaPassagens.append(passagem)
-                                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                                            contCadastroViagem += 1
-                                                                            continue
-                                                                        else:
-                                                                            print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
-                                                                            continue
-
-                                                                    else:
-
-                                                                        if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante']:
-
-                                                                            print(f'Passageiro encontrado: \nCPF: {cpfAcompanhanteFormatado}\nNome: {passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']}\nSerá incluido como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')
-
-                                                                            voos[codVoo]['lugares'] -= 1
-                                                                            dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
-                                                                            'nome' : passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome'],
-                                                                            'idade' : passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade'],
-                                                                            'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                            'cpfResponsavel' : cpfVendaFormatado,
-                                                                            'passagem' : {
-                                                                                passagem : {'pagador' : cpfVendaFormatado}
-                                                                                }
-                                                                            }
-
-                                                                            passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                                'pagador' : cpfVendaFormatado
-                                                                            }
-                                                                            listaPassagens.append(passagem)
-                                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                                            contCadastroViagem += 1
-                                                                            continue
-
-                                                                        else:
-                                                                            print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
-                                                                            continue
-
-                                                                else:
-                                                                
-                                                                    verifNome = False
-                                                                    while verifNome == False:
-                                                                        os.system('cls' if os.name == 'nt' else 'clear')
-
-                                                                        nome = input('Digite o nome do(a) acompanhante: ').title()
-
-                                                                        if nome == '-':
+                                                                    if cpfPassageiro == '-':
+                                                                            menuVoos = False
                                                                             break
+                                                                    
+                                                                    if cpfAcompanhanteFormatado in passageiros or cpfAcompanhanteFormatado in passageiros[cpfVendaFormatado]['acompanhante']:
+                                                                        if cpfAcompanhanteFormatado not in passageiros[cpfVendaFormatado]['acompanhante']:
+                                                                            if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo]:
+                                                                                voos[codVoo]['lugares'] -= 1
+                                                                                dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
+                                                                                'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
+                                                                                'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                                'telefone' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                                'passagem' : {
+                                                                                    passagem : {'pagador' : cpfVendaFormatado}
+                                                                                    }
+                                                                                }
+                                                                                listaPassagens.append(passagem)
+                                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                                contCadastroViagem += 1
+                                                                                continue
+                                                                            else:
+                                                                                print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                                                continue
 
-                                                                        contEspacosVazios = 0
-                                                                        contInvalido = 0
+                                                                        else:
 
-                                                                        for caracter in nome:
-                                                                            if not caracter.isalpha() and not caracter.isspace():
-                                                                                contInvalido += 1
-                                                                            
-                                                                        if contInvalido > 0:
-                                                                            os.system('cls')
-                                                                            print(f'O nome não pode conter números ou caracteres especiais, por favor, digite novamente!\n')
-                                                                            input('Pressione ENTER para continuar...')
-                                                                            continue
+                                                                            if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante']:
 
-                                                                        if len(nome) < 10:
+                                                                                print(f'Passageiro encontrado: \nCPF: {cpfAcompanhanteFormatado}\nNome: {passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']}\nSerá incluido como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')
 
-                                                                            print('O nome deve conter ao menos 10 caracteres.')
-                                                                            input('Pressione ENTER para continuar...')
-                                                                            continue
-                                                                        elif contEspacosVazios > 5:
-                                                                            print('O nome não pode conter mais de 5 espaços.')
-                                                                            input('Pressione ENTER para continuar...')
+                                                                                voos[codVoo]['lugares'] -= 1
+                                                                                dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                                'nome' : passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome'],
+                                                                                'idade' : passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade'],
+                                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                                'cpfResponsavel' : cpfVendaFormatado,
+                                                                                'passagem' : {
+                                                                                    passagem : {'pagador' : cpfVendaFormatado}
+                                                                                    }
+                                                                                }
+
+                                                                                passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                                    'pagador' : cpfVendaFormatado
+                                                                                }
+                                                                                listaPassagens.append(passagem)
+                                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                                contCadastroViagem += 1
+                                                                                continue
+
+                                                                            else:
+                                                                                print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                                                continue
+
+                                                                    else:
+                                                                    
+                                                                        verifNome = False
+                                                                        while verifNome == False:
+                                                                            os.system('cls' if os.name == 'nt' else 'clear')
+
+                                                                            nome = input('Digite o nome do(a) acompanhante: ').title()
+
+                                                                            if nome == '-':
+                                                                                menuVoos = False
+                                                                                break
+
                                                                             contEspacosVazios = 0
-                                                                            continue
+                                                                            contInvalido = 0
 
-                                                                        if nome == '':
-                                                                            os.system('cls')
-                                                                            print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
-                                                                            input('Pressione ENTER para continuar...')
-                                                                            continue
-                                                            
-                                                                        for i in nome:  
-                                                                            if i == ' ':
-                                                                                contEspacosVazios += 1
-
-                                                                        if len(nome) == (contEspacosVazios):
+                                                                            for caracter in nome:
+                                                                                if not caracter.isalpha() and not caracter.isspace():
+                                                                                    contInvalido += 1
+                                                                                
+                                                                            if contInvalido > 0:
                                                                                 os.system('cls')
-                                                                                print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                                print(f'O nome não pode conter números ou caracteres especiais, por favor, digite novamente!\n')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
+
+                                                                            if len(nome) < 10:
+
+                                                                                print('O nome deve conter ao menos 10 caracteres.')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
+                                                                            elif contEspacosVazios > 5:
+                                                                                print('O nome não pode conter mais de 5 espaços.')
                                                                                 input('Pressione ENTER para continuar...')
                                                                                 contEspacosVazios = 0
                                                                                 continue
-                                                                        verifNome = True
 
-                                                                    if nome == '-':
-                                                                        break
-                                                                    
-                                                                    verifIdade = False
-                                                                    while verifIdade == False:
-                                                                        os.system('cls' if os.name == 'nt' else 'clear')
+                                                                            if nome == '':
+                                                                                os.system('cls')
+                                                                                print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
+                                                                
+                                                                            for i in nome:  
+                                                                                if i == ' ':
+                                                                                    contEspacosVazios += 1
 
-                                                                        idade = input('Digite a idade do(a) acompanhante: ')
+                                                                            if len(nome) == (contEspacosVazios):
+                                                                                    os.system('cls')
+                                                                                    print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                                    input('Pressione ENTER para continuar...')
+                                                                                    contEspacosVazios = 0
+                                                                                    continue
+                                                                            verifNome = True
 
-                                                                        if idade == '-':
+                                                                        if nome == '-':
+                                                                            menuVoos = False
                                                                             break
-
-                                                                        if idade.isdigit() == False or int(idade) < 1 or int(idade) > 120:
-                                                                            print('Idade inválida, por favor digite a sua idade!')
-                                                                            input('Pressione ENTER para continuar...')
-                                                                            continue
-                                                                        else:
-                                                                            verifIdade = True
-
-                                                                    if idade == '-':
-                                                                            break
-                                                                    
-                                                                    if int(idade) >= 18:
-                                                                        verifTelefone = False
-                                                                        while verifTelefone == False:
+                                                                        
+                                                                        verifIdade = False
+                                                                        while verifIdade == False:
                                                                             os.system('cls' if os.name == 'nt' else 'clear')
-                                                                            telefone = input('Digite telefone: ')
-                                                                            contTelefone = 0
 
-                                                                            if telefone == '-':
+                                                                            idade = input('Digite a idade do(a) acompanhante: ')
+
+                                                                            if idade == '-':
+                                                                                menuVoos = False
                                                                                 break
 
-                                                                            if len(telefone) == 14:
-                                                                                contNumTel = 0
-                                                                                contCarTel = 0
-                                                                                for i in telefone:
-                                                                                    if i.isdigit() == True:
-                                                                                        contNumTel += 1
-                                                                                    if listCaracteresEspeciais.count(i) == 1:
-                                                                                        contCarTel += 1
-                                                                                if contNumTel == 11 and contCarTel == 3 and telefone[0] == '(' and telefone[3] == ')' and telefone[9] == '-':
+                                                                            if idade.isdigit() == False or int(idade) < 1 or int(idade) > 120:
+                                                                                print('Idade inválida, por favor digite a sua idade!')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
+                                                                            else:
+                                                                                verifIdade = True
+
+                                                                        if idade == '-':
+                                                                                menuVoos = False
+                                                                                break
+                                                                        
+                                                                        if int(idade) >= 18:
+                                                                            verifTelefone = False
+                                                                            while verifTelefone == False:
+                                                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                                                telefone = input('Digite telefone: ')
+                                                                                contTelefone = 0
+
+                                                                                if telefone == '-':
+                                                                                    menuVoos = False
+                                                                                    break
+
+                                                                                if len(telefone) == 14:
+                                                                                    contNumTel = 0
+                                                                                    contCarTel = 0
+                                                                                    for i in telefone:
+                                                                                        if i.isdigit() == True:
+                                                                                            contNumTel += 1
+                                                                                        if listCaracteresEspeciais.count(i) == 1:
+                                                                                            contCarTel += 1
+                                                                                    if contNumTel == 11 and contCarTel == 3 and telefone[0] == '(' and telefone[3] == ')' and telefone[9] == '-':
+                                                                                        for c in passageiros:
+                                                                                            if telefone in passageiros[c]['telefone']:
+                                                                                                contTelefone += 1
+                                                                                        if contTelefone > 0:
+                                                                                            print('Telefone já cadastrado! Por favor, digite outro telefone!')
+                                                                                            input('Pressione ENTER para continuar...')
+                                                                                            continue
+                                                                                        else:
+                                                                                            verifTelefone = True
+                                                                                            continue
+                                                                                    else:
+                                                                                        print('Telefone inválido, por favor digite o seu telefone!')
+                                                                                        continue
+
+                                                                                if telefone.isdigit() and len(telefone) == 11:
+                                                                                    telefone = '(' + telefone[0:2] + ')' + telefone[2:7] + '-' + telefone[7:11]
                                                                                     for c in passageiros:
                                                                                         if telefone in passageiros[c]['telefone']:
                                                                                             contTelefone += 1
@@ -2212,334 +2412,371 @@ Escolha uma das opções a baixo:
                                                                                     else:
                                                                                         verifTelefone = True
                                                                                         continue
+                                                                                        
                                                                                 else:
                                                                                     print('Telefone inválido, por favor digite o seu telefone!')
-                                                                                    continue
-
-                                                                            if telefone.isdigit() and len(telefone) == 11:
-                                                                                telefone = '(' + telefone[0:2] + ')' + telefone[2:7] + '-' + telefone[7:11]
-                                                                                for c in passageiros:
-                                                                                    if telefone in passageiros[c]['telefone']:
-                                                                                        contTelefone += 1
-                                                                                if contTelefone > 0:
-                                                                                    print('Telefone já cadastrado! Por favor, digite outro telefone!')
                                                                                     input('Pressione ENTER para continuar...')
                                                                                     continue
-                                                                                else:
-                                                                                    verifTelefone = True
-                                                                                    continue
-                                                                                    
-                                                                            else:
-                                                                                print('Telefone inválido, por favor digite o seu telefone!')
-                                                                                input('Pressione ENTER para continuar...')
-                                                                                continue
-                                                                        
-                                                                        if telefone == '-':
-                                                                            break
-                                                                        passageiros[cpfAcompanhanteFormatado] = {
-                                                                        'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
-                                                                        'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                        'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
-                                                                        'acompanhante' : {},
-                                                                        'passagens' : {}
-                                                                        }
-
-                                                                        voos[codVoo]['lugares'] -= 1
-                                                                        dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
-                                                                        'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
-                                                                        'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                        'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
-                                                                        'acompanhante' : {},
-                                                                        'passagem' : {
-                                                                            passagem : {'pagador' : cpfVendaFormatado}
-                                                                            } 
-                                                                        }
-                                                                        passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                            'pagador' : cpfVendaFormatado
-                                                                        }
-                                                                        listaPassagens.append(passagem)
-                                                                        listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                                        
-                                                                    else:
-                                                                        passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
-                                                                            'nome': nome,
-                                                                            'idade': idade,
-                                                                            'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                            'cpfResponsavel' : cpfVendaFormatado,
-                                                                            'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
-                                                                            'passagens' : {}
-                                                                        }
-                                                                        voos[codVoo]['lugares'] -= 1
-                                                                        dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                            
+                                                                            if telefone == '-':
+                                                                                menuVoos = False
+                                                                                break
+                                                                            passageiros[cpfAcompanhanteFormatado] = {
                                                                             'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
                                                                             'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                            'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                            'cpfResponsavel' : cpfVendaFormatado,
-                                                                            'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                            'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
+                                                                            'acompanhante' : {},
+                                                                            'passagens' : {}
+                                                                            }
+
+                                                                            voos[codVoo]['lugares'] -= 1
+                                                                            dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
+                                                                            'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
+                                                                            'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                            'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
+                                                                            'acompanhante' : {},
                                                                             'passagem' : {
                                                                                 passagem : {'pagador' : cpfVendaFormatado}
+                                                                                } 
                                                                             }
-                                                                        }
-                                                                        passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                            'pagador' : cpfVendaFormatado
-                                                                        }
-                                                                        listaPassagens.append(passagem)
-                                                                        listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                            passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                                'pagador' : cpfVendaFormatado
+                                                                            }
+                                                                            listaPassagens.append(passagem)
+                                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                            
+                                                                        else:
+                                                                            passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                                'nome': nome,
+                                                                                'idade': idade,
+                                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                                'cpfResponsavel' : cpfVendaFormatado,
+                                                                                'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                                'passagens' : {}
+                                                                            }
+                                                                            voos[codVoo]['lugares'] -= 1
+                                                                            dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                                'nome' : nome,
+                                                                                'idade' : idade,
+                                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                                'cpfResponsavel' : cpfVendaFormatado,
+                                                                                'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                                'passagem' : {
+                                                                                    passagem : {'pagador' : cpfVendaFormatado}
+                                                                                }
+                                                                            }
+                                                                            passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                                'pagador' : cpfVendaFormatado
+                                                                            }
+                                                                            listaPassagens.append(passagem)
+                                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
 
-                                                                    contCadastroViagem += 1
+                                                                        contCadastroViagem += 1
 
-                                                            print(f'===================')
-                                                            for cpf in listaPassageirosIncluidos:
-                                                                if cpf in passageiros[cpfVendaFormatado]['acompanhante']:
-                                                                    print(f'{passageiros[cpfVendaFormatado]['acompanhante'][cpf]['nome']} foi incluido no voo: {codVoo}, como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')     
-                                                                else:                                                           
-                                                                    print(f'{passageiros[cpf]['nome']} foi incluido no voo: {codVoo}')
-                                                            print(f'===================') 
-                                                            input(f'Pressione ENTER para continuar..')
-                                                            os.system('cls' if os.name == 'nt' else 'clear')
-                                                            listaPassageirosIncluidos = []
-                                                            listaPassagens.append(passagem)
-                                                            break
-                                            else:                       
-                                                break
+                                                                print(f'===================')
+                                                                for cpf in listaPassageirosIncluidos:
+                                                                    if cpf in passageiros[cpfVendaFormatado]['acompanhante']:
+                                                                        print(f'{passageiros[cpfVendaFormatado]['acompanhante'][cpf]['nome']} foi incluido no voo: {codVoo}, como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')     
+                                                                    else:                                                           
+                                                                        print(f'{passageiros[cpf]['nome']} foi incluido no voo: {codVoo}')
+                                                                print(f'===================') 
+                                                                input(f'Pressione ENTER para continuar..')
+                                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                                listaPassageirosIncluidos = []
+                                                                listaPassagens.append(passagem)
+                                                                break
+                                                else:                       
+                                                    break
 
-                                    if opcaoVendaPassagem == '-':
-                                        continue
-                                else:       
-                                    print(f'Passageiro encontrado:\nCPF: {cpfVendaFormatado} \nNome: {passageiros[cpfVendaFormatado]['nome']}')   
-                                    
-                                    verifQtdPassagens = False
-                                    while not verifQtdPassagens:
-
-                                        qtdPassagens = input(f'Digite o número de passagens que deseja incluir: ')
+                                        if opcaoVendaPassagem == '-':
+                                            menuVoos = False
+                                            continue
+                                    else:       
+                                        print(f'Passageiro encontrado:\nCPF: {cpfVendaFormatado} \nNome: {passageiros[cpfVendaFormatado]['nome']}')   
                                         
-                                        if qtdPassagens == '-':
-                                            break
-                                        
-                                        elif qtdPassagens == '' or not qtdPassagens.isdigit() or int(qtdPassagens) > voos[codVoo]['lugares'] or int(qtdPassagens) < 1 :
-                                            print(f'Quantidade ínvalida! Por favor, digite novamente.')
-                                            input(f'Pressione ENTER para continuar..')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                        verifQtdPassagens = False
+                                        while not verifQtdPassagens:
+
+                                            qtdPassagens = input(f'Digite o número de passagens que deseja incluir: ')
                                             
-                                        else:
-                                            if len(dicPassagensVoos[codVoo].keys()) > 0:
-                                                for cpf in dicPassagensVoos[codVoo]:
-                                                    if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
-                                                        contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                            if qtdPassagens == '-':
+                                                menuVoos = False
+                                                break
+                                            
+                                            elif qtdPassagens == '' or not qtdPassagens.isdigit() or int(qtdPassagens) > voos[codVoo]['lugares'] or int(qtdPassagens) < 1 :
+                                                print(f'Quantidade ínvalida! Por favor, digite novamente.')
+                                                input(f'Pressione ENTER para continuar..')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                
+                                            else:
+                                                if len(dicPassagensVoos[codVoo].keys()) > 0:
+                                                    for cpf in dicPassagensVoos[codVoo]:
+                                                        if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
+                                                            contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                                        else:
+                                                            contPassageirosVoo += 1
+
+                                                passagem = f'p{contPassageirosVoo+1}_{codVoo}'
+
+                                                auxContPassageirosVoo = contPassageirosVoo
+
+                                                passagemUtilizada = True
+                                                while passagemUtilizada:
+                                                    if passagem in listaPassagens:
+                                                        auxContPassageirosVoo += 1
+                                                        passagem = f'p{auxContPassageirosVoo+1}_{codVoo}'
                                                     else:
-                                                        contPassageirosVoo += 1
+                                                        passagemUtilizada = False
 
-                                            passagem = f'p{contPassageirosVoo+1}_{codVoo}'
+                                                verifQtdPassagens = True
+                                                qtdPassagens = int(qtdPassagens)
 
-                                            verifQtdPassagens = True
-                                            qtdPassagens = int(qtdPassagens)
-
-                                            voos[codVoo]['lugares'] -= 1
-                                            dicPassagensVoos[codVoo][cpfVendaFormatado] = {
-                                                'nome' : passageiros[cpfVendaFormatado]['nome'],
-                                                'idade' : passageiros[cpfVendaFormatado]['idade'],
-                                                'telefone' : passageiros[cpfVendaFormatado]['telefone'],
-                                                'acompanhante' : {},
-                                                'passagem' : {
-                                                    passagem : {'pagador' : cpfVendaFormatado}
+                                                voos[codVoo]['lugares'] -= 1
+                                                dicPassagensVoos[codVoo][cpfVendaFormatado] = {
+                                                    'nome' : passageiros[cpfVendaFormatado]['nome'],
+                                                    'idade' : passageiros[cpfVendaFormatado]['idade'],
+                                                    'telefone' : passageiros[cpfVendaFormatado]['telefone'],
+                                                    'acompanhante' : {},
+                                                    'passagem' : {
+                                                        passagem : {'pagador' : cpfVendaFormatado}
+                                                    }
                                                 }
-                                            }
-                                            passageiros[cpfVendaFormatado]['passagens'][passagem] = {
-                                                'pagador' : cpfVendaFormatado
-                                            }
-                                            listaPassagens.append(passagem)
+                                                passageiros[cpfVendaFormatado]['passagens'][passagem] = {
+                                                    'pagador' : cpfVendaFormatado
+                                                }
+                                                listaPassagens.append(passagem)
 
-                                            listaPassageirosIncluidos = []
+                                                listaPassageirosIncluidos = []
 
-                                            if qtdPassagens > 1:
-                                                contCadastroViagem = 1
-                                                while contCadastroViagem < qtdPassagens:
-                                                    if len(dicPassagensVoos[codVoo].keys()) > 0:
-                                                        for cpf in dicPassagensVoos[codVoo]:
-                                                            if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
-                                                                contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                                if qtdPassagens > 1:
+                                                    contCadastroViagem = 1
+                                                    while contCadastroViagem < qtdPassagens:
+                                                        if len(dicPassagensVoos[codVoo].keys()) > 0:
+                                                            for cpf in dicPassagensVoos[codVoo]:
+                                                                if dicPassagensVoos[codVoo][cpf]['acompanhante'] != {''}:
+                                                                    contPassageirosVoo += 1 + len(dicPassagensVoos[codVoo][cpf]['acompanhante'].keys())
+                                                                else:
+                                                                    contPassageirosVoo += 1
+
+                                                        passagem = f'p{contPassageirosVoo+1}_{codVoo}'
+
+                                                        auxContPassageirosVoo = contPassageirosVoo
+
+                                                        passagemUtilizada = True
+                                                        while passagemUtilizada:
+                                                            if passagem in listaPassagens:
+                                                                auxContPassageirosVoo += 1
+                                                                passagem = f'p{auxContPassageirosVoo+1}_{codVoo}'
                                                             else:
-                                                                contPassageirosVoo += 1
+                                                                passagemUtilizada = False
 
-                                                    passagem = f'p{contPassageirosVoo+1}_{codVoo}'
-                                                    print(f'Digite os dados do {contCadastroViagem+1}º passageiro: ')
-                                                    verifCpfPassageiro = False
-                                                    while verifCpfPassageiro == False:
-                                                        cpfPassageiro = input('Digite o CPF do passageiro: ')
+                                                        print(f'Digite os dados do {contCadastroViagem+1}º passageiro: ')
+                                                        verifCpfPassageiro = False
+                                                        while verifCpfPassageiro == False:
+                                                            cpfPassageiro = input('Digite o CPF do passageiro: ')
 
-                                                        if cpfPassageiro == '-':
-                                                            break
-                                                        
-                                                        if len(cpfPassageiro) == 14:
-                                                            contNumCpf = 0
-                                                            contCarCpf = 0
-                                                            for i in cpfPassageiro:
-                                                                if i.isdigit():
-                                                                    contNumCpf += 1
-                                                                if listCaracteresEspeciais.count(i) == 1:
-                                                                    contCarCpf += 1
+                                                            if cpfPassageiro == '-':
+                                                                menuVoos = False
+                                                                break
+                                                            
+                                                            if len(cpfPassageiro) == 14:
+                                                                contNumCpf = 0
+                                                                contCarCpf = 0
+                                                                for i in cpfPassageiro:
+                                                                    if i.isdigit():
+                                                                        contNumCpf += 1
+                                                                    if listCaracteresEspeciais.count(i) == 1:
+                                                                        contCarCpf += 1
 
-                                                            if contNumCpf == 11 and contCarCpf == 3 and cpfPassageiro[3] == '.' and cpfPassageiro[7] == '.' and cpfPassageiro[11] == '-':
-                                                                cpfAcompanhanteFormatado = cpfPassageiro
+                                                                if contNumCpf == 11 and contCarCpf == 3 and cpfPassageiro[3] == '.' and cpfPassageiro[7] == '.' and cpfPassageiro[11] == '-':
+                                                                    cpfAcompanhanteFormatado = cpfPassageiro
+                                                                    verifCpfPassageiro = True
+                                                                else:
+                                                                    print('CPF inválido, por favor digite novamente!')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    continue
+
+                                                            elif len(cpfPassageiro) == 11 and cpfPassageiro.isdigit():
+                                                                cpfAcompanhanteFormatado = cpfPassageiro[0:3] + '.' + cpfPassageiro[3:6] + '.' + cpfPassageiro[6:9] + '-' + cpfPassageiro[9:11]
                                                                 verifCpfPassageiro = True
                                                             else:
                                                                 print('CPF inválido, por favor digite novamente!')
                                                                 input('Pressione ENTER para continuar...')
                                                                 continue
 
-                                                        elif len(cpfPassageiro) == 11 and cpfPassageiro.isdigit():
-                                                            cpfAcompanhanteFormatado = cpfPassageiro[0:3] + '.' + cpfPassageiro[3:6] + '.' + cpfPassageiro[6:9] + '-' + cpfPassageiro[9:11]
-                                                            verifCpfPassageiro = True
-                                                        else:
-                                                            print('CPF inválido, por favor digite novamente!')
-                                                            input('Pressione ENTER para continuar...')
-                                                            continue
-
-                                                    if cpfPassageiro == '-':
-                                                            break
-                                                    
-                                                    if cpfAcompanhanteFormatado in passageiros or cpfAcompanhanteFormatado in passageiros[cpfVendaFormatado]['acompanhante']:
-                                                        if cpfAcompanhanteFormatado not in passageiros[cpfVendaFormatado]['acompanhante']:
-                                                            if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo]:
-                                                                voos[codVoo]['lugares'] -= 1
-                                                                dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
-                                                                'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
-                                                                'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                'telefone' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                'acompanhante' : {},
-                                                                'passagem' : {
-                                                                    passagem : {'pagador' : cpfVendaFormatado}
-                                                                    }
-                                                                }
-
-                                                                passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                    'pagador' : cpfVendaFormatado
-                                                                }
-                                                                listaPassagens.append(passagem)
-                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                                continue
-                                                            else:
-                                                                print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
-                                                                continue
-                                                        else:
-                                                            if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante']:
-                                                                print(f'Passageiro encontrado: \nCPF: {cpfAcompanhanteFormatado}\nNome: {passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']}\nSerá incluido como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')
-
-                                                                voos[codVoo]['lugares'] -= 1
-                                                                dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
-                                                                'nome': nome,
-                                                                'idade': idade,
-                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                'cpfResponsavel' : cpfVendaFormatado,
-                                                                'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
-                                                                'passagem' : {
-                                                                    passagem : {'pagador' : cpfVendaFormatado}
-                                                                    }
-                                                                }
-                                                                passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                    'pagador' : cpfVendaFormatado
-                                                                }
-                                                                listaPassagens.append(passagem)
-                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                                continue
-                                                            else:
-                                                                print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
-                                                                continue
-
-                                                    else:
-                                                    
-                                                        verifNome = False
-                                                        while verifNome == False:
-                                                            os.system('cls' if os.name == 'nt' else 'clear')
-
-                                                            nome = input('Digite o nome do(a) acompanhante: ').title()
-
-                                                            if nome == '-':
+                                                        if cpfPassageiro == '-':
+                                                                menuVoos = False
                                                                 break
+                                                        
+                                                        if cpfAcompanhanteFormatado in passageiros or cpfAcompanhanteFormatado in passageiros[cpfVendaFormatado]['acompanhante']:
+                                                            if cpfAcompanhanteFormatado not in passageiros[cpfVendaFormatado]['acompanhante']:
+                                                                if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo]:
+                                                                    voos[codVoo]['lugares'] -= 1
+                                                                    dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
+                                                                    'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
+                                                                    'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                    'telefone' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                    'acompanhante' : {},
+                                                                    'passagem' : {
+                                                                        passagem : {'pagador' : cpfVendaFormatado}
+                                                                        }
+                                                                    }
 
-                                                            contEspacosVazios = 0
-                                                            contInvalido = 0
+                                                                    passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                        'pagador' : cpfVendaFormatado
+                                                                    }
+                                                                    listaPassagens.append(passagem)
+                                                                    listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                    contCadastroViagem += 1
+                                                                    continue
+                                                                else:
+                                                                    print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                                    continue
+                                                            else:
+                                                                if cpfAcompanhanteFormatado not in dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante']:
+                                                                    print(f'Passageiro encontrado: \nCPF: {cpfAcompanhanteFormatado}\nNome: {passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']}\nSerá incluido como acompanhante de {passageiros[cpfVendaFormatado]['nome']}')
 
-                                                            for caracter in nome:
-                                                                if not caracter.isalpha() and not caracter.isspace():
-                                                                    contInvalido += 1
-                                                                
-                                                            if contInvalido > 0:
-                                                                os.system('cls')
-                                                                print(f'O nome não pode conter números ou caracteres especiais, por favor, digite novamente!\n')
-                                                                input('Pressione ENTER para continuar...')
-                                                                continue
+                                                                    voos[codVoo]['lugares'] -= 1
+                                                                    dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                    'nome': nome,
+                                                                    'idade': idade,
+                                                                    'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                    'cpfResponsavel' : cpfVendaFormatado,
+                                                                    'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                    'passagem' : {
+                                                                        passagem : {'pagador' : cpfVendaFormatado}
+                                                                        }
+                                                                    }
+                                                                    passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                        'pagador' : cpfVendaFormatado
+                                                                    }
+                                                                    contCadastroViagem += 1
+                                                                    listaPassagens.append(passagem)
+                                                                    listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                    continue
+                                                                else:
+                                                                    print(f'Passageiro já possui uma passagem comprada no voo: {codVoo}')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                                    continue
 
-                                                            if len(nome) < 10:
+                                                        else:
+                                                        
+                                                            verifNome = False
+                                                            while verifNome == False:
+                                                                os.system('cls' if os.name == 'nt' else 'clear')
 
-                                                                print('O nome deve conter ao menos 10 caracteres.')
-                                                                input('Pressione ENTER para continuar...')
-                                                                continue
-                                                            elif contEspacosVazios > 5:
-                                                                print('O nome não pode conter mais de 5 espaços.')
-                                                                input('Pressione ENTER para continuar...')
+                                                                nome = input('Digite o nome do(a) acompanhante: ').title()
+
+                                                                if nome == '-':
+                                                                    menuVoos = False
+                                                                    break
+
                                                                 contEspacosVazios = 0
-                                                                continue
+                                                                contInvalido = 0
 
-                                                            if nome == '':
-                                                                os.system('cls')
-                                                                print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
-                                                                input('Pressione ENTER para continuar...')
-                                                                continue
-                                                
-                                                            for i in nome:  
-                                                                if i == ' ':
-                                                                    contEspacosVazios += 1
-
-                                                            if len(nome) == (contEspacosVazios):
+                                                                for caracter in nome:
+                                                                    if not caracter.isalpha() and not caracter.isspace():
+                                                                        contInvalido += 1
+                                                                    
+                                                                if contInvalido > 0:
                                                                     os.system('cls')
-                                                                    print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                    print(f'O nome não pode conter números ou caracteres especiais, por favor, digite novamente!\n')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    continue
+
+                                                                if len(nome) < 10:
+
+                                                                    print('O nome deve conter ao menos 10 caracteres.')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    continue
+                                                                elif contEspacosVazios > 5:
+                                                                    print('O nome não pode conter mais de 5 espaços.')
                                                                     input('Pressione ENTER para continuar...')
                                                                     contEspacosVazios = 0
                                                                     continue
-                                                            verifNome = True
 
-                                                        if nome == '-':
-                                                            break
-                                                        
-                                                        verifIdade = False
-                                                        while verifIdade == False:
-                                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                                                if nome == '':
+                                                                    os.system('cls')
+                                                                    print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    continue
+                                                    
+                                                                for i in nome:  
+                                                                    if i == ' ':
+                                                                        contEspacosVazios += 1
 
-                                                            idade = input('Digite a idade do(a) acompanhante: ')
+                                                                if len(nome) == (contEspacosVazios):
+                                                                        os.system('cls')
+                                                                        print(f'O nome não pode conter somente espaços vazios, por favor, digite novamente!\n')
+                                                                        input('Pressione ENTER para continuar...')
+                                                                        contEspacosVazios = 0
+                                                                        continue
+                                                                verifNome = True
 
-                                                            if idade == '-':
+                                                            if nome == '-':
+                                                                menuVoos = False
                                                                 break
-
-                                                            if idade.isdigit() == False or int(idade) < 1 or int(idade) > 120:
-                                                                print('Idade inválida, por favor digite a sua idade!')
-                                                                input('Pressione ENTER para continuar...')
-                                                                continue
-                                                            else:
-                                                                verifIdade = True
-
-                                                        if idade == '-':
-                                                                break
-                                                        
-                                                        if int(idade) >= 18:
-                                                            verifTelefone = False
-                                                            while verifTelefone == False:
+                                                            
+                                                            verifIdade = False
+                                                            while verifIdade == False:
                                                                 os.system('cls' if os.name == 'nt' else 'clear')
-                                                                telefone = input('Digite telefone: ')
-                                                                contTelefone = 0
 
-                                                                if telefone == '-':
+                                                                idade = input('Digite a idade do(a) acompanhante: ')
+
+                                                                if idade == '-':
+                                                                    menuVoos = False
                                                                     break
 
-                                                                if len(telefone) == 14:
-                                                                    contNumTel = 0
-                                                                    contCarTel = 0
-                                                                    for i in telefone:
-                                                                        if i.isdigit() == True:
-                                                                            contNumTel += 1
-                                                                        if listCaracteresEspeciais.count(i) == 1:
-                                                                            contCarTel += 1
-                                                                    if contNumTel == 11 and contCarTel == 3 and telefone[0] == '(' and telefone[3] == ')' and telefone[9] == '-':
+                                                                if idade.isdigit() == False or int(idade) < 1 or int(idade) > 120:
+                                                                    print('Idade inválida, por favor digite a sua idade!')
+                                                                    input('Pressione ENTER para continuar...')
+                                                                    continue
+                                                                else:
+                                                                    verifIdade = True
+
+                                                            if idade == '-':
+                                                                menuVoos = False
+                                                                break
+                                                            
+                                                            if int(idade) >= 18:
+                                                                verifTelefone = False
+                                                                while verifTelefone == False:
+                                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                                    telefone = input('Digite telefone: ')
+                                                                    contTelefone = 0
+
+                                                                    if telefone == '-':
+                                                                        menuVoos = False
+                                                                        break
+
+                                                                    if len(telefone) == 14:
+                                                                        contNumTel = 0
+                                                                        contCarTel = 0
+                                                                        for i in telefone:
+                                                                            if i.isdigit() == True:
+                                                                                contNumTel += 1
+                                                                            if listCaracteresEspeciais.count(i) == 1:
+                                                                                contCarTel += 1
+                                                                        if contNumTel == 11 and contCarTel == 3 and telefone[0] == '(' and telefone[3] == ')' and telefone[9] == '-':
+                                                                            for c in passageiros:
+                                                                                if telefone in passageiros[c]['telefone']:
+                                                                                    contTelefone += 1
+                                                                            if contTelefone > 0:
+                                                                                print('Telefone já cadastrado! Por favor, digite outro telefone!')
+                                                                                input('Pressione ENTER para continuar...')
+                                                                                continue
+                                                                            else:
+                                                                                verifTelefone = True
+                                                                                continue
+                                                                        else:
+                                                                            print('Telefone inválido, por favor digite o seu telefone!')
+                                                                            continue
+
+                                                                    if telefone.isdigit() and len(telefone) == 11:
+                                                                        telefone = '(' + telefone[0:2] + ')' + telefone[2:7] + '-' + telefone[7:11]
                                                                         for c in passageiros:
                                                                             if telefone in passageiros[c]['telefone']:
                                                                                 contTelefone += 1
@@ -2550,150 +2787,151 @@ Escolha uma das opções a baixo:
                                                                         else:
                                                                             verifTelefone = True
                                                                             continue
+                                                                            
                                                                     else:
                                                                         print('Telefone inválido, por favor digite o seu telefone!')
-                                                                        continue
-
-                                                                if telefone.isdigit() and len(telefone) == 11:
-                                                                    telefone = '(' + telefone[0:2] + ')' + telefone[2:7] + '-' + telefone[7:11]
-                                                                    for c in passageiros:
-                                                                        if telefone in passageiros[c]['telefone']:
-                                                                            contTelefone += 1
-                                                                    if contTelefone > 0:
-                                                                        print('Telefone já cadastrado! Por favor, digite outro telefone!')
                                                                         input('Pressione ENTER para continuar...')
                                                                         continue
-                                                                    else:
-                                                                        verifTelefone = True
-                                                                        continue
-                                                                        
-                                                                else:
-                                                                    print('Telefone inválido, por favor digite o seu telefone!')
-                                                                    input('Pressione ENTER para continuar...')
-                                                                    continue
-                                                            
-                                                            if telefone == '-':
-                                                                break
+                                                                
+                                                                if telefone == '-':
+                                                                    menuVoos = False
+                                                                    break
 
-                                                            passageiros[cpfAcompanhanteFormatado] = {
-                                                                'nome' : nome,
-                                                                'idade' : idade,
-                                                                'telefone' : telefone,
-                                                                'acompanhante' : {},
-                                                                'passagens' : {}
-                                                            }
-
-                                                            voos[codVoo]['lugares'] -= 1
-                                                            dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
-                                                                'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
-                                                                'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
-                                                                'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
-                                                                'passagem' : {
-                                                                    passagem : {'pagador' : cpfVendaFormatado}
+                                                                passageiros[cpfAcompanhanteFormatado] = {
+                                                                    'nome' : nome,
+                                                                    'idade' : idade,
+                                                                    'telefone' : telefone,
+                                                                    'acompanhante' : {},
+                                                                    'passagens' : {}
                                                                     }
-                                                                }
-                                                            passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                'pagador' : cpfVendaFormatado
-                                                            }
-                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                            listaPassagens.append(passagem)
-                                                            
-                                                        else:
-                                                            passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
-                                                                'nome': nome,
-                                                                'idade': idade,
-                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                'cpfResponsavel' : cpfVendaFormatado,
-                                                                'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
-                                                                'passagens' : {}
-                                                            }
-                                                        
-                                                            voos[codVoo]['lugares'] -= 1
-                                                            dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
-                                                                'nome' :  passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome'],
-                                                                'idade' :  passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade'],
-                                                                'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
-                                                                'cpfResponsavel' : cpfVendaFormatado,
-                                                                'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
-                                                                'passagem' : {
-                                                                    passagem : {'pagador' : cpfVendaFormatado}
-                                                                    }
-                                                                }
-                                                            passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
-                                                                 'pagador' : cpfVendaFormatado
-                                                            }
-                                                            listaPassagens.append(passagem)
-                                                            listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
-                                                    contCadastroViagem += 1
-                                                print(f'===================')       
-                                                for cpf in listaPassageirosIncluidos:
-                                                    print(f'{passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']} foi incluido no voo ({codVoo}) como acompanhante de {passageiros[cpfVendaFormatado]['nome']}' 
-                                                            if int(passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade']) < 18 else f'{passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']} foi incluido no voo ({codVoo})')
-                                                print(f'===================')
-                                                input(f'Pressione ENTER para continuar..')
-                                                os.system('cls' if os.name == 'nt' else 'clear')
-                                                
-                                                listaPassageirosIncluidos = []
 
+                                                                voos[codVoo]['lugares'] -= 1
+                                                                dicPassagensVoos[codVoo][cpfAcompanhanteFormatado] = {
+                                                                    'nome' : passageiros[cpfAcompanhanteFormatado]['nome'],
+                                                                    'idade' : passageiros[cpfAcompanhanteFormatado]['idade'],
+                                                                    'telefone' : passageiros[cpfAcompanhanteFormatado]['telefone'],
+                                                                    'passagem' : {
+                                                                        passagem : {'pagador' : cpfVendaFormatado}
+                                                                        }
+                                                                    }
+                                                                passageiros[cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                    'pagador' : cpfVendaFormatado
+                                                                }
+                                                                contCadastroViagem += 1
+                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                                listaPassagens.append(passagem)
+                                                                
+                                                            else:
+                                                                passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                    'nome': nome,
+                                                                    'idade': idade,
+                                                                    'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                    'cpfResponsavel' : cpfVendaFormatado,
+                                                                    'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                    'passagens' : {}
+                                                                    }
+                                                            
+                                                                voos[codVoo]['lugares'] -= 1
+                                                                dicPassagensVoos[codVoo][cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado] = {
+                                                                    'nome' :  passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome'],
+                                                                    'idade' :  passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade'],
+                                                                    'telefoneResponsavel' : passageiros[cpfVendaFormatado]['telefone'],
+                                                                    'cpfResponsavel' : cpfVendaFormatado,
+                                                                    'nomeResponsavel' : passageiros[cpfVendaFormatado]['nome'],
+                                                                    'passagem' : {
+                                                                        passagem : {'pagador' : cpfVendaFormatado}
+                                                                        }
+                                                                    }
+                                                                passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['passagens'][passagem] = {
+                                                                    'pagador' : cpfVendaFormatado
+                                                                }
+                                                                contCadastroViagem += 1
+                                                                listaPassagens.append(passagem)
+                                                                listaPassageirosIncluidos.append(cpfAcompanhanteFormatado)
+                                                        contCadastroViagem += 1
+                                                    print(f'===================')       
+                                                    for cpf in listaPassageirosIncluidos:
+                                                        print(f'{passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']} foi incluido no voo ({codVoo}) como acompanhante de {passageiros[cpfVendaFormatado]['nome']}' 
+                                                                if int(passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['idade']) < 18 else f'{passageiros[cpfVendaFormatado]['acompanhante'][cpfAcompanhanteFormatado]['nome']} foi incluido no voo ({codVoo})')
+                                                    print(f'===================')
+                                                    input(f'Pressione ENTER para continuar..')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                    
+                                                    listaPassageirosIncluidos = []
+
+                                                else:
+
+                                                    print(f'{passageiros[cpfVendaFormatado]['nome']} foi incluido(a) no voo: {codVoo}!')
+                                                    input(f'Pressione ENTER para continuar..')
+                                                    os.system('cls' if os.name == 'nt' else 'clear')
+                                                    
+                                elif opcaoPassagem == '2':
+
+                                    verifCpfCancelamento = False
+                                    while verifCpfCancelamento == False:
+
+                                        cpfCancelar = input('Digite o CPF do passageiro para cancelar a passagem: ')
+
+                                        if cpfCancelar == '-':
+                                            menuVoos = False
+                                            break
+
+                                        if len(cpfCancelar) == 14:
+
+                                            contNumCpf = 0
+                                            contCarCpf = 0
+
+                                            for i in cpfCancelar:
+                                                if i.isdigit():
+                                                    contNumCpf += 1
+                                                if listCaracteresEspeciais.count(i) == 1:
+                                                    contCarCpf += 1
+
+                                            if contNumCpf == 11 and contCarCpf == 3 and cpfCancelar[3] == '.' and cpfCancelar[7] == '.' and cpfCancelar[11] == '-':
+                                                cpfCancelarFormatado = cpfCancelar
+                                                verifCpfCancelamento = True
                                             else:
-
-                                                print(f'{passageiros[cpfVendaFormatado]['nome']} foi incluido(a) no voo: {codVoo}!')
-                                                input(f'Pressione ENTER para continuar..')
+                                                print('CPF inválido, por favor digite novamente!')
+                                                input('Pressione ENTER para continuar...')
                                                 os.system('cls' if os.name == 'nt' else 'clear')
-                                                
-                            elif opcaoPassagem == '2':
+                                                continue
 
-                                verifCpfCancelamento = False
-                                while verifCpfCancelamento == False:
-
-                                    cpfCancelar = input('Digite o CPF do passageiro para cancelar a passagem: ')
-
-                                    if cpfCancelar == '-':
-                                        break
-
-                                    if len(cpfCancelar) == 14:
-
-                                        contNumCpf = 0
-                                        contCarCpf = 0
-
-                                        for i in cpfCancelar:
-                                            if i.isdigit():
-                                                contNumCpf += 1
-                                            if listCaracteresEspeciais.count(i) == 1:
-                                                contCarCpf += 1
-
-                                        if contNumCpf == 11 and contCarCpf == 3 and cpfCancelar[3] == '.' and cpfCancelar[7] == '.' and cpfCancelar[11] == '-':
-                                            cpfCancelarFormatado = cpfCancelar
+                                        elif len(cpfCancelar) == 11 and cpfCancelar.isdigit():
+                                            cpfCancelarFormatado = cpfCancelar[0:3] + '.' + cpfCancelar[3:6] + '.' + cpfCancelar[6:9] + '-' + cpfCancelar[9:11]
                                             verifCpfCancelamento = True
                                         else:
                                             print('CPF inválido, por favor digite novamente!')
                                             input('Pressione ENTER para continuar...')
+                                            os.system('cls' if os.name == 'nt' else 'clear')
                                             continue
-
-                                    elif len(cpfCancelar) == 11 and cpfCancelar.isdigit():
-                                        cpfCancelarFormatado = cpfCancelar[0:3] + '.' + cpfCancelar[3:6] + '.' + cpfCancelar[6:9] + '-' + cpfCancelar[9:11]
-                                        verifCpfCancelamento = True
-                                    else:
-                                        print('CPF inválido, por favor digite novamente!')
-                                        input('Pressione ENTER para continuar...')
-                                        continue
-                                
-                                if cpfCancelar == '-':
+                                    
+                                    if cpfCancelar == '-':
+                                        menuVoos = False
                                         break
-                                
-                                verifcodigoVooCancelar = False
-                                while not verifcodigoVooCancelar:
-                                    contNaoEncontrado = 0
-                                    for codVoo in dicPassagensVoos:
-                                        if cpfCancelarFormatado in dicPassagensVoos[codVoo]:
+                                    
+                                    verifcodigoVooCancelar = False
+                                    while not verifcodigoVooCancelar:
+                                        contNaoEncontrado = 0
+                                        if cpfCancelarFormatado in passageiros:
                                             print(f'Voos em que {passageiros[cpfCancelarFormatado]['nome']} tem passagens:')
                                             print(f'obs: Passageiros acompanhantes (menores de 18) ligados as este CPF são excluídos automaticamente')
 
-                                            for codVoo, dados in voos.items():
-                                                print(f'{codVoo}: Origem - {dados['origem']}, destino - {dados['destino']}')
-                                            codigoVooCancelar = input(f'Digite o código do voo que deseja cancelar: ')
+                                            for codVoo in dicPassagensVoos:
+                                                if cpfCancelarFormatado in dicPassagensVoos[codVoo]:
+                                                    print(f'{codVoo}: Origem - {voos[codVoo]['origem']}, destino - {voos[codVoo]['destino']}')
+                                                else:
+                                                    contNaoEncontrado += 1
+                                            if contNaoEncontrado == len(dicPassagensVoos):
+                                                print('\nNenhuma passagem encontrada para esse CPF.')
+                                                input('Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                break
+                                            
+                                            print(f'Para cancelar a passagem, digite o código do voo (ex: "v-1"): ')
+                                            codigoVooCancelar = input(f'--> ')
 
                                             if codigoVooCancelar == '-':
+                                                menuVoos = False
                                                 break
 
                                             if codigoVooCancelar == '' or codigoVooCancelar not in dicPassagensVoos:
@@ -2714,27 +2952,146 @@ Escolha uma das opções a baixo:
                                                 del passageiros[cpfCancelarFormatado]['passagens'][cancelarPassagem]
 
                                                 for cpfAcompanhante in passageiros[cpfCancelarFormatado]['acompanhante']:
-                                                    for passagemAcompanhante in passageiros[cpfCancelarFormatado]['acompanhante'][cpfAcompanhante]['passagens']:
+                                                    for passagemAcompanhante in passageiros[cpfCancelarFormatado]['acompanhante'][cpfAcompanhante]['passagens'].keys():
                                                         if passagemAcompanhante.find(codigoVooCancelar) != -1:
                                                             cancelarPassagemAcompanhante = passagemAcompanhante
-                                                del passageiros[cpfCancelarFormatado]['acompanhante'][cpfAcompanhante]['passagens'][passagemAcompanhante]
+                                                            auxiliarCpfAcompanhante = cpfAcompanhante
+                                                        del passageiros[cpfCancelarFormatado]['acompanhante'][auxiliarCpfAcompanhante]['passagens'][cancelarPassagemAcompanhante]
                                                 input(f'Pressione ENTER para continuar..')
                                                 os.system('cls' if os.name == 'nt' else 'clear')
                                                 continue
                                         else:
-                                            contNaoEncontrado += 1
-                                        if contNaoEncontrado == len(dicPassagensVoos):
-                                            print('Nenhuma passagem encontrada para esse CPF.')
-                                            input('Pressione ENTER para continuar...')
-                                            os.system('cls' if os.name == 'nt' else 'clear')
+                                            passageirosNaoEncontrados = False
+                                            for cpf in passageiros:
+                                                if cpfCancelarFormatado in passageiros[cpf]['acompanhante']:
+                                                    auxCpf = cpf
+                                                    passageirosNaoEncontrados = False
+                                                    break
+                                                else:
+                                                    passageirosNaoEncontrados = True
 
-                            elif opcaoPassagem == '3':
-                                verifMenuPassagem = True
+                                            if passageirosNaoEncontrados:
+                                                print(f'Nenhum passageiro encontrado com o CPF: {cpfCancelarFormatado}')
+                                                input('Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                break
+
+                                            print(f'Passageiro encontrado: \nCPF: {cpfCancelarFormatado}\nNome: {passageiros[auxCpf]['acompanhante'][cpfCancelarFormatado]['nome']}')
+                                            print(f'obs: Este passageiro é acompanhante de: ')
+                                            
+                                            for cpf in passageiros:
+                                                if cpfCancelarFormatado in passageiros[cpf]['acompanhante']:
+                                                    print(f'- {passageiros[cpf]['nome']}')
+
+                                            print(f'\nVoos em que {passageiros[auxCpf]['acompanhante'][cpfCancelarFormatado]['nome']} tem passagens:')
+                                            listaCpfCancelarAcompanhante = []
+                                            for codVoo in dicPassagensVoos:
+                                                for cpf in dicPassagensVoos[codVoo]:
+                                                    if cpfCancelarFormatado in dicPassagensVoos[codVoo][cpf]['acompanhante']:
+                                                        print(f'{codVoo}: Origem - {voos[codVoo]['origem']}, destino - {voos[codVoo]['destino']}')
+                                                        listaCpfCancelarAcompanhante.append(cpf)
+                                                    else:
+                                                        contNaoEncontrado += 1
+                                            if contNaoEncontrado == len(dicPassagensVoos):
+                                                print('\nNenhuma passagem encontrada para esse CPF.')
+                                                input('Pressione ENTER para continuar...')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                break
+                                            print(f'Para cancelar a passagem, digite o código do voo (ex: "v-1"): ')
+                                            codigoVooCancelar = input(f'--> ')
+
+                                            if codigoVooCancelar == '-':
+                                                menuVoos = False
+                                                break
+                                            
+                                            if codigoVooCancelar == '' or codigoVooCancelar not in dicPassagensVoos:
+                                                print(f'Código inválido! Por favor, digite novamente.')
+                                                input(f'Pressione ENTER para continuar..')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                continue
+                                            else:
+                                                verifcodigoVooCancelar = True
+                                                print('Passagem cancelada com sucesso!')
+                                                voos[codVoo]['lugares'] += 1
+                                                for cpf in listaCpfCancelarAcompanhante:
+                                                    del dicPassagensVoos[codVoo][cpf]['acompanhante'][cpfCancelarFormatado]
+
+                                                for passagem in passageiros[cpf]['acompanhante'][cpfCancelarFormatado]['passagens']:
+                                                    if passagem.find(codigoVooCancelar) != -1:
+                                                        cancelarPassagem = passagem
+                                                del passageiros[cpf]['acompanhante'][cpfCancelarFormatado]['passagens'][cancelarPassagem]
+                                                input(f'Pressione ENTER para continuar..')
+                                                os.system('cls' if os.name == 'nt' else 'clear')
+                                                continue
+
+                                elif opcaoPassagem == '3':
+                                    verifMenuPassagem = True
+                                    menuVoos = False
+                                    os.system('cls' if os.name == 'nt' else 'clear')
+                    elif optionVoo == '5':
+                        verifCodVooCancelar = False
+                        while not verifCodVooCancelar:
+                            os.system('cls' if os.name == 'nt' else 'clear')
+                            print('Digite o código do voo que deseja cancelar (ex: "v-1"): ')
+                            print(f'obs: Todos os passageiros e acompanhantes deste voo serão excluídos automaticamente')
+                            codVooCancelar = input(f'--> ')
+                            if codVooCancelar == '-':
+                                menuVoos = False
+                                break
+                            if codVooCancelar == '' or codVooCancelar not in voos:
+                                print(f'Código inválido ou voo não cadastrado! Por favor, digite novamente.')
+                                input(f'Pressione ENTER para continuar..')
+                                os.system('cls' if os.name == 'nt' else 'clear')
+                            else:
+                                verifCodVooCancelar = True
+                                print(f'Voo encontrado: \nCódigo: {codVooCancelar}\nOrigem: {voos[codVooCancelar]['origem']}\nDestino: {voos[codVooCancelar]['destino']}\nData/Hora: {voos[codVooCancelar]['dataHora']}')
+                                print(f'Voo {codVooCancelar} cancelado com sucesso!')
+                                if passageiros != {}:
+                                    dicCpfPassagemCancelar = {}
+                                    listaAuxPassagensCancelar = []
+                                    dicPassagensAcompanhantesCancelar = {}
+                                    listaAuxPassagensAcompanhantesCancelar = []
+                                    for cpf in passageiros:
+                                        if passageiros[cpf]['passagens'] != {}:
+                                            for passagem in passageiros[cpf]['passagens']:
+                                                if passagem.find(codVooCancelar) != -1:
+                                                    listaAuxPassagensCancelar.append(passagem)
+                                                    dicCpfPassagemCancelar[cpf] = listaAuxPassagensCancelar
+                                    
+                                    for cpf in dicCpfPassagemCancelar:
+                                        for passagem in listaAuxPassagensCancelar:
+                                            if passagem in passageiros[cpf]['passagens']:   
+                                                del passageiros[cpf]['passagens'][passagem]
+                                            if passagem in listaPassagens:
+                                                listaPassagens.remove(passagem)
+
+                                    for cpf in passageiros:
+                                        if passageiros[cpf]['acompanhante'] != {}:
+                                            for cpfAcompanhante in passageiros[cpf]['acompanhante']:
+                                                if passageiros[cpf]['acompanhante'][cpfAcompanhante]['passagens'] != {}:
+                                                    dicPassagensAcompanhantesCancelar[cpf] = {}
+                                                    for passagemAcompanhante in passageiros[cpf]['acompanhante'][cpfAcompanhante]['passagens']:
+                                                        if passagemAcompanhante.find(codVooCancelar) != -1:
+                                                            listaAuxPassagensAcompanhantesCancelar.append(passagemAcompanhante)
+                                                            dicPassagensAcompanhantesCancelar[cpf][cpfAcompanhante] = listaAuxPassagensAcompanhantesCancelar
+
+                                    for cpf in dicPassagensAcompanhantesCancelar:
+                                        for cpfAcompanhante in dicPassagensAcompanhantesCancelar[cpf]:
+                                            for passagemAcompanhante in listaAuxPassagensAcompanhantesCancelar:
+                                                if passagemAcompanhante in passageiros[cpf]['acompanhante'][cpfAcompanhante]['passagens']:
+                                                    del passageiros[cpf]['acompanhante'][cpfAcompanhante]['passagens'][passagemAcompanhante]
+                                                if passagem in listaPassagens:
+                                                    listaPassagens.remove(passagem)
+                                if codVooCancelar in dicPassagensVoos:
+                                    del dicPassagensVoos[codVooCancelar]
+                                del voos[codVooCancelar]
+                                contVoo -= 1
+
+                                input(f'Pressione ENTER para continuar..')
                                 os.system('cls' if os.name == 'nt' else 'clear')
 
-                elif optionVoo == '5':
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    continue                                       
+                    elif optionVoo == '6':
+                        break                                     
 
         elif option == '4':
             print('Finalizando app...')
