@@ -1,36 +1,7 @@
 import os
 
-passageiros = {
-    '466.156.648-36':{
-        'nome': 'Miguel Fernandes Monteiro',
-        'idade': 18,
-        'telefone': '(19)98228-5101',
-        'acompanhante' : {},
-        'passagens' : {}
-    },
-    '416.769.548-05':{
-        'nome': 'Cezar Rull',
-        'idade': 18,
-        'telefone': '(19)99944-0521',
-        'acompanhante' : {},
-        'passagens' : {}
-    },
-
-    }
-voos = {
-    'v-1':{
-        'origem': 'São Paulo (SP)',
-        'destino': 'Rio de Janeiro (RJ)',
-        'aeroportoDeOrigem': 'Aeroporto de Congonhas (CGH)',
-        'aeroportoDeDestino': 'Aeroporto Santos Dumont (SDU)',
-        'escalas': 1,
-        'precoPassagem': 'R$ 2.000,00',
-        'lugares': 40,
-        'dataHora': '15/05/2025 22:26',
-        'companhiaAerea': 'Azul Linhas Aéreas'
-    }
-}
-
+passageiros = {}
+voos = {}
 
 listaNumeroVerificacao = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '.']
 listCaracteresEspeciais = ['.', '-', '(', ')',] 
@@ -221,7 +192,7 @@ listaPassagens = []
 
 contPessoas = 0
 lugares = 40
-contVoo = 1
+contVoo = 0
 
 verifOption = False
 while verifOption == False:
